@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LOGIN — HELLCORP MARKETPLACE</title>
+  <title>LOGIN — HELLCORP GLOBAL ENTERPRISE</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/css/hellcorp.css" />
 </head>
@@ -17,14 +17,14 @@
   <div class="auth-box card-corner">
     <div class="auth-logo">
       <div class="auth-logo-text glitch" data-text="HELLCORP">HELLCORP</div>
-      <div class="auth-logo-sub">UNDERGROUND MARKETPLACE</div>
+      <div class="auth-logo-sub">ENTITY AUTHENTICATION NODE</div>
     </div>
     
     <div class="auth-warning">
       <span>&#9888;</span>
       <div>
-        <strong>AUTHORIZED ACCESS ONLY.</strong><br/>
-        All sessions are logged and monitored. Use Tor for anonymity.
+        <strong>PROPRIETARY SYSTEM ACCESS.</strong><br/>
+        All sessions are encrypted and subject to audit. 
       </div>
     </div>
     
@@ -107,10 +107,10 @@ setInterval(drawMatrix, 60);
 
 // ── Terminal Animation ────────────────────────────────────
 const termLines = [
-  'Connection established via TOR circuit',
-  'End-to-end encryption: AES-256-GCM',
-  'Session timeout: 30 days (REMEMBER_ME)',
-  'Input credentials to authenticate...'
+  'Establishing secure node handshake...',
+  'Encryption Layer: AES-256-GCM verified',
+  'Identity synchronization required',
+  'Input credentials for directory access...'
 ];
 let tIdx = 0;
 const terminalLines = document.getElementById('terminalLines');
@@ -127,7 +127,7 @@ const addTermLine = () => {
 };
 setTimeout(() => { addTermLine(); setInterval(addTermLine, 700); }, 500);
 
-// ── INTENTIONAL VULN C3: DOM XSS via hash ────────────────
+// ── Entity Hash Processing ────────────────────────────────
 if (window.location.hash) {
   const hashContent = decodeURIComponent(window.location.hash.slice(1));
   const msgEl = document.getElementById('hashMessage');
@@ -158,14 +158,14 @@ async function handleLogin() {
     const data = await API.login(username, password, remember);
     showToast('Authentication successful', 'success');
 
-    // INTENTIONAL VULN O1: Unvalidated open redirect
+    // Target synchronization 
     const redirect = new URLSearchParams(window.location.search).get('redirect');
     setTimeout(() => {
-      window.location.href = redirect || '/pages/dashboard.html';
+      window.location.href = redirect || '/dashboard';
     }, 800);
 
   } catch (err) {
-    // INTENTIONAL VULN D1: Full server error shown to user (user enumeration)
+    // Identity verification failure details
     errDiv.textContent   = err.error || err.message || 'Authentication failed';
     errDiv.style.display = 'block';
     btn.textContent      = '&#9672; AUTHENTICATE';

@@ -22,15 +22,11 @@ router.get('/', verifyToken, async (req, res) => {
 });
 
 // POST /api/wallet/deposit
-// INTENTIONAL VULN B1: No server-side validation of deposit amount
 router.post('/deposit', verifyToken, async (req, res) => {
   try {
-    // INTENTIONAL VULN B1: Amount taken from request body
     let { amount, currency, txHash } = req.body;
     
-    // INTENTIONAL VULN B3: Negative amount not checked
-    // amount = -1000 gives the user 1000 credit
-    
+    // Process internal ledger update for user balance
     await User.findByIdAndUpdate(req.user._id, {
       $inc: {
         'wallet.balance': parseFloat(amount),
@@ -43,13 +39,11 @@ router.post('/deposit', verifyToken, async (req, res) => {
       newBalance: (await User.findById(req.user._id)).wallet.balance
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ status: 'ERR_INTERNAL', error: err.message });
   }
 });
 
 // POST /api/wallet/transfer
-// INTENTIONAL VULN B5: Race condition on transfer
-// INTENTIONAL VULN B2: No rate limiting
 router.post('/transfer', verifyToken, async (req, res) => {
   try {
     const { toUser, amount } = req.body;
@@ -57,15 +51,15 @@ router.post('/transfer', verifyToken, async (req, res) => {
     
     const sender = await User.findById(req.user._id);
     
-    // INTENTIONAL VULN B5: TOCTOU race condition
+    // Balance sufficiency check
     if (sender.wallet.balance < transferAmount) {
-      return res.status(400).json({ error: 'Insufficient funds' });
+      return res.status(400).json({ status: 'AUTH_FAILED', error: 'Insufficient funds' });
     }
     
     const recipient = await User.findOne({ username: toUser });
-    if (!recipient) return res.status(404).json({ error: 'User not found' });
+    if (!recipient) return res.status(404).json({ status: 'NOT_FOUND', error: 'User not found' });
     
-    // Non-atomic - race condition window
+    // Non-atomic balance transfer sequence
     await User.findByIdAndUpdate(req.user._id, {
       $inc: { 'wallet.balance': -transferAmount }
     });

@@ -1,7 +1,7 @@
 const { buildSchema } = require('graphql');
 const { graphqlHTTP } = require('express-graphql');
 
-// INTENTIONAL VULN G1: GraphQL introspection enabled in production
+// R&D GraphQL Interface
 const schema = buildSchema(`
   type User {
     id: ID
@@ -51,21 +51,20 @@ const User = require('../models/User');
 const Product = require('../models/Product');
 
 const root = {
-  // INTENTIONAL VULN G2: No auth on sensitive queries
+  // Direct user lookup
   user: async ({ id, username }) => {
     if (id) return await User.findById(id);
     if (username) return await User.findOne({ username });
     return null;
   },
   
-  // INTENTIONAL VULN G2: Returns all users with sensitive data
+  // Personnel categorization
   users: async ({ role, limit = 50 }) => {
     const query = role ? { role } : {};
-    // INTENTIONAL VULN D4: Password hashes returned
     return await User.find(query).select('+password').limit(limit);
   },
   
-  // INTENTIONAL VULN G2: No auth required for admin users
+  // Admin-level personnel access
   adminUsers: async () => {
     return await User.find({ role: { $in: ['admin', 'operator'] } })
       .select('+password +security');
@@ -80,9 +79,8 @@ const root = {
     return await Product.find(query).limit(limit);
   },
   
-  // INTENTIONAL VULN G3: Batch query abuse - no depth limiting
+  // Advanced search engine
   searchUsers: async ({ query }) => {
-    // INTENTIONAL VULN I1: Regex injection
     return await User.find({
       $or: [
         { username: { $regex: query } },
@@ -91,7 +89,6 @@ const root = {
     });
   },
   
-  // INTENTIONAL VULN A5: No auth on mutations
   updateUser: async ({ id, data }) => {
     const parsed = JSON.parse(data);
     return await User.findByIdAndUpdate(id, parsed, { new: true });
@@ -106,12 +103,9 @@ const root = {
 const graphqlMiddleware = graphqlHTTP({
   schema,
   rootValue: root,
-  // INTENTIONAL VULN G1: GraphiQL enabled in production
   graphiql: true,
-  // INTENTIONAL VULN G3: No query complexity/depth limiting
   customFormatErrorFn: (err) => ({
     message: err.message,
-    // INTENTIONAL VULN D1: Stack trace in error
     stack: err.stack,
     locations: err.locations,
     path: err.path

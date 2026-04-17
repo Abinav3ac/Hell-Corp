@@ -16,8 +16,7 @@ const connectDB = async () => {
     });
     
   } catch (err) {
-    // INTENTIONAL VULN L1: Full error details exposed
-    console.error(`\x1b[31m[HELLCORP DB FATAL]\x1b[0m`, err);
+    console.error(`\x1b[31m[HGE DB FATAL]\x1b[0m Connection failure detected.`);
     process.exit(1);
   }
 };

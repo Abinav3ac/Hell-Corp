@@ -88,5 +88,3 @@ AssetSchema.index({ category: 1, status: 1 });
 AssetSchema.index({ name: 'text', 'content.description': 'text' });
 
 module.exports = mongoose.model('Product', AssetSchema);
-
-module.exports = mongoose.model('Product', ProductSchema);

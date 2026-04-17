@@ -7,7 +7,6 @@ const AuditLogSchema = new mongoose.Schema({
   resource: { type: String },
   resourceId: { type: String },
   
-  // INTENTIONAL VULN L3: Log injection via user-controlled input
   details: { type: mongoose.Schema.Types.Mixed },
   
   ipAddress: { type: String },

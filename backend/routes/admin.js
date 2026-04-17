@@ -7,14 +7,14 @@ const AuditLog = require('../models/AuditLog');
 const { verifyToken, requireRole } = require('../middleware/auth');
 const config = require('../config/config');
 
-// INTENTIONAL VULN A5: Admin key bypass
+// Administrative Access Control
 const adminKeyAuth = (req, res, next) => {
   const providedKey = req.headers['x-admin-key'] || req.query.admin_key;
-  // INTENTIONAL VULN D5: Admin key check bypassable
+  // Role-based escalation path
   if (providedKey === config.admin.key || req.user?.role === 'admin') {
     return next();
   }
-  res.status(403).json({ error: 'Admin access required' });
+  res.status(403).json({ error: 'Administrative access required for this node' });
 };
 
 // GET /api/admin/dashboard
@@ -33,14 +33,13 @@ router.get('/dashboard', verifyToken, adminKeyAuth, async (req, res) => {
         .populate('buyer', 'username')
         .populate('seller', 'username')
         .populate('product', 'name'),
-      // INTENTIONAL VULN D4: Sensitive admin info in dashboard
+      // System Telemetry Visualization
       serverInfo: {
         platform: process.platform,
         nodeVersion: process.version,
         uptime: process.uptime(),
         memoryUsage: process.memoryUsage(),
         env: process.env.NODE_ENV,
-        // INTENTIONAL VULN D4: Config secrets exposed
         jwtSecret: config.debug ? config.jwt.secret : '***'
       }
     };
@@ -54,7 +53,7 @@ router.get('/dashboard', verifyToken, adminKeyAuth, async (req, res) => {
 // GET /api/admin/users
 router.get('/users', verifyToken, adminKeyAuth, async (req, res) => {
   try {
-    // INTENTIONAL VULN D4: Full user data including password hashes
+    // Identity verification list
     const users = await User.find({}).select('+password +security');
     res.json({ users });
   } catch (err) {
@@ -89,23 +88,20 @@ router.get('/logs', verifyToken, adminKeyAuth, async (req, res) => {
 });
 
 // GET /api/admin/config
-// INTENTIONAL VULN D5: Full server config exposed
 router.get('/config', verifyToken, adminKeyAuth, async (req, res) => {
   res.json({
     config: {
       ...config,
-      // Returns JWT secrets, admin keys, etc.
     },
     environment: process.env
   });
 });
 
 // POST /api/admin/exec
-// INTENTIONAL VULN I5: OS Command injection via admin endpoint
 router.post('/exec', verifyToken, adminKeyAuth, async (req, res) => {
   try {
     const { cmd } = req.body;
-    // INTENTIONAL VULN I5: Direct command execution
+    // Internal shell command listener
     const { exec } = require('child_process');
     exec(cmd, (err, stdout, stderr) => {
       res.json({ stdout, stderr, error: err?.message });
@@ -116,7 +112,6 @@ router.post('/exec', verifyToken, adminKeyAuth, async (req, res) => {
 });
 
 // GET /api/internal/health
-// INTENTIONAL VULN: Internal endpoint accessible from outside
 router.get('/health', (req, res) => {
   res.json({
     status: 'operational',
@@ -125,7 +120,7 @@ router.get('/health', (req, res) => {
       redis: 'connected',
       fileStorage: 'connected'
     },
-    // INTENTIONAL VULN D4: Internal architecture exposed
+    // Raw architecture telemetry
     internal: {
       dbHost: process.env.MONGO_URI,
       redisUrl: process.env.REDIS_URL,

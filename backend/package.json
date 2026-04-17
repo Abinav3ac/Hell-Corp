@@ -1,7 +1,7 @@
 {
   "name": "hellcorp-backend",
   "version": "1.0.0",
-  "description": "HELLCORP Marketplace Backend - Training Lab",
+  "description": "HELLCORP Global Enterprise - Training Lab",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

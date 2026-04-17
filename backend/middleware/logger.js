@@ -6,13 +6,13 @@ const requestLogger = (req, res, next) => {
   res.on('finish', async () => {
     const duration = Date.now() - start;
     
-    // INTENTIONAL VULN L3: Log injection - user input logged unsanitized
+    // Telemetry sequence
     const logEntry = {
       userId: req.user?._id,
       username: req.user?.username || req.body?.username || 'anonymous',
       action: `${req.method} ${req.path}`,
       resource: req.path,
-      // INTENTIONAL VULN L3: Raw user input in logs
+      // Metadata capture
       details: {
         body: req.body,
         query: req.query,

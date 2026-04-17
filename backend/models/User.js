@@ -88,5 +88,3 @@ UserSchema.statics.findByIdentity = async function(id) {
 };
 
 module.exports = mongoose.model('User', UserSchema);
-
-module.exports = mongoose.model('User', UserSchema);

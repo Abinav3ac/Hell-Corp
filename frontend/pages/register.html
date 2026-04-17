@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>REGISTER — HELLCORP MARKETPLACE</title>
+  <title>REGISTER — HELLCORP GLOBAL ENTERPRISE</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/css/hellcorp.css" />
 </head>
@@ -14,7 +14,7 @@
   <div class="auth-box card-corner" style="max-width:500px;">
     <div class="auth-logo">
       <div class="auth-logo-text glitch" data-text="HELLCORP">HELLCORP</div>
-      <div class="auth-logo-sub">CREATE OPERATOR ACCOUNT</div>
+      <div class="auth-logo-sub">IDENTITY PROVISIONING NODE</div>
     </div>
 
     <div class="auth-warning">
@@ -45,13 +45,11 @@
         <div class="form-hint">3-30 chars, no spaces</div>
       </div>
       <div class="form-group">
-        <label class="form-label">ACCOUNT TYPE <span class="required">*</span></label>
-        <!-- INTENTIONAL VULN A12: role value sent directly to API -->
+        <label class="form-label">ACCOUNT TIER <span class="required">*</span></label>
         <select class="form-control" id="regRole">
-          <option value="buyer">BUYER</option>
-          <option value="vendor">VENDOR</option>
-          <!-- Hidden option — discoverable via source inspection -->
-          <!-- <option value="admin">ADMIN</option> -->
+          <option value="employee">INTERNAL OPERATOR</option>
+          <option value="contractor">EXTERNAL CONTRACTOR</option>
+          <!-- Administrative tiers reserved -->
         </select>
       </div>
     </div>
@@ -190,35 +188,32 @@ async function handleRegister() {
   btn.disabled    = true;
 
   try {
-    // INTENTIONAL VULN A12: Mass assignment — role, adminNotes, internalFlags
-    // all accepted by the backend without stripping. Sending role=admin works.
+    // Process identity payload
     const payload = {
       username,
       email,
       password,
-      role,                          // A12: client-controlled role
-      'profile.pgpKey': pgpKey,
-      'vendor.shopName': shopName,
+      role,
+      'profile.fullName': username, 
       referral
-      // Try adding: role:"admin", internalFlags:["vip"], adminNotes:"test"
     };
 
     const data = await API.register(payload);
 
     successDiv.innerHTML =
-      'Account created! Welcome, <strong>' +
+      'Provisioning complete. Welcome, <strong>' +
       escapeHtml(data.user.username) +
-      '</strong>. Redirecting to dashboard...';
+      '</strong>. Accessing dashboard...';
     successDiv.style.display = 'block';
 
-    showToast('Registration successful!', 'success');
+    showToast('Identity provisioned successfully.', 'success');
     setTimeout(() => {
-      window.location.href = '/pages/dashboard.html';
+      window.location.href = '/dashboard';
     }, 1500);
 
   } catch (err) {
-    // INTENTIONAL VULN D1: Server error (including field that caused duplicate) shown raw
-    errDiv.textContent   = err.error || err.message || 'Registration failed. Try again.';
+    // Identity verification failure details
+    errDiv.textContent   = err.error || err.message || 'Provisioning failed. Contact System Admin.';
     errDiv.style.display = 'block';
     btn.textContent      = '&#9672; CREATE ACCOUNT';
     btn.disabled         = false;
