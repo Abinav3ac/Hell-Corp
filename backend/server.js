@@ -145,18 +145,32 @@ setInterval(async () => {
 
 // ─── Error Handling ───────────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
-  const errorPayload = {
+  const traceId = require('crypto').randomBytes(4).toString('hex');
+  const status = err.status || 500;
+  
+  // Log the full error internally, including stack trace and context
+  console.error(`[ERROR][${traceId}] ${req.method} ${req.path}:`, {
     message: err.message,
-    status: err.status || 500,
-    traceId: require('crypto').randomBytes(4).toString('hex')
+    stack: err.stack,
+    input: req.body ? { ...req.body, password: '***', secret: '***', key: '***' } : null
+  });
+
+  const errorPayload = {
+    message: status === 500 ? 'Internal Server Error' : err.message,
+    status: status,
+    traceId: traceId
   };
   
+  // Even in debug mode, we should NOT send the full stack trace or the raw request body (leaks passwords)
   if (config.debug) {
-    errorPayload.details = err.stack;
-    errorPayload.context = { path: req.path, method: req.method, input: req.body };
+    errorPayload.debug_info = {
+      path: req.path,
+      method: req.method,
+      type: err.name
+    };
   }
   
-  res.status(errorPayload.status).json({ errors: [errorPayload] });
+  res.status(status).json({ errors: [errorPayload] });
 });
 
 app.use((req, res) => {

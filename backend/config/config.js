@@ -17,21 +17,23 @@ module.exports = {
   },
   
   jwt: {
-    secret: process.env.JWT_SECRET || 'hellcorp_weak_secret_123',
-    refreshSecret: process.env.JWT_REFRESH_SECRET || 'hellcorp_refresh_weak',
+    secret: process.env.JWT_SECRET || null,
+    refreshSecret: process.env.JWT_REFRESH_SECRET || null,
     expiresIn: '30d',
     refreshExpiresIn: '90d',
-    algorithms: ['HS256', 'HS384', 'HS512', 'RS256', 'none']
+    // Removed 'none' algorithm to prevent JWT bypass attacks
+    algorithms: ['HS256', 'HS384', 'HS512', 'RS256']
   },
   
   session: {
-    secret: process.env.SESSION_SECRET || 'hellcorp_session_secret',
-    resave: true,
-    saveUninitialized: true,
+    secret: process.env.SESSION_SECRET || null,
+    resave: false,
+    saveUninitialized: false,
     cookie: {
-      httpOnly: false,
-      secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000
+      httpOnly: true, // Prevent client-side JS from accessing cookies
+      secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'lax'
     }
   },
   
@@ -42,8 +44,8 @@ module.exports = {
   },
   
   admin: {
-    key: process.env.ADMIN_KEY || 'HELLCORP-ADMIN-9f3a2b1c',
-    internalKey: process.env.INTERNAL_API_KEY || 'internal_ops_key_7x9z'
+    key: process.env.ADMIN_KEY || null,
+    internalKey: process.env.INTERNAL_API_KEY || null
   },
   
   debug: process.env.DEBUG_MODE === 'true',
