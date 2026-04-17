@@ -1,14 +1,3 @@
-```text
-  _    _  ______  _       _        _____   ____   _____   _____  
- | |  | ||  ____|| |     | |      / ____| / __ \ |  __ \ |  __ \ 
- | |__| || |__   | |     | |     | |     | |  | || |__) || |__) |
- |  __  ||  __|  | |     | |     | |     | |  | ||  _  / |  ___/ 
- | |  | || |____ | |____ | |____ | |____ | |__| || | \ \ | |     
- |_|  |_||______||______||______| \_____| \____/ |_|  \_\|_|     
-                                                                   
-   G L O B A L   E N T E R P R I S E   |   C T F   L A B   v 2 . 4
-```
-
 # Hellcorp Global Enterprise (HGE) — Management Console
 ## Official Corporate Security Research & Training Environment
 
