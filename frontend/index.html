@@ -1,76 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ENTRY NODE — HELLCORP GLOBAL ENTERPRISE</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/hge.css">
-    <style>
-        .hero-section {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(to bottom, var(--void) 0%, var(--ink) 100%);
-            position: relative;
-            overflow: hidden;
-            text-align: center;
-        }
-        .matrix-bg {
-            position: absolute; inset: 0;
-            opacity: 0.05; pointer-events: none;
-            font-family: var(--font-ui); font-size: 8px; color: var(--red);
-            overflow: hidden; line-height: 1;
-        }
-        .hero-content { position: relative; z-index: 10; padding: 40px; }
-        .hero-logo { font-size: 80px; margin-bottom: 8px; }
-        .hero-subtitle { font-size: 14px; color: var(--off); letter-spacing: 0.5em; text-transform: uppercase; margin-bottom: 40px; }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HELLCORP — ENTERPRISE SOLUTIONS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/hellcorp-core.css"/>
 </head>
-<body class="hge-app">
-    <div class="hero-section">
-        <div class="matrix-bg" id="matrix"></div>
+<body>
+<div class="app">
 
-        <div class="hero-content animate-in">
-            <div style="font-size: 10px; color: var(--red); letter-spacing: 0.8em; margin-bottom: 16px;">// SECURE_ENTRY_GATEWAY_v4</div>
-            <div class="hge-logo hero-logo">HELL<em>CORP</em></div>
-            <div class="hero-subtitle">Global Enterprise Management</div>
-            
-            <p style="color: var(--off); max-width: 500px; margin: 0 auto 40px; line-height: 1.8; font-size: 12px;">
-                Strictly Confidential. Unauthorized access to HGE-Core infrastructure 
-                is monitored and prosecuted under global digital jurisdiction HGE-7.
-            </p>
-
-            <div style="display: flex; gap: 16px; justify-content: center;">
-                <a href="/dashboard" class="hge-btn hge-btn-primary">ACCESS DASHBOARD</a>
-                <a href="/login.html" class="hge-btn hge-btn-ghost">OPERATOR LOGIN</a>
-            </div>
-        </div>
-
-        <div style="position: absolute; bottom: 40px; font-size: 9px; color: rgba(160,154,144,0.3); text-transform: uppercase; letter-spacing: 0.2em;">
-            ENCRYPTION: AES-256-GCM — NODES: 14,892 — STATUS: ACTIVE
-        </div>
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span class="ticker-item">⬛ HELLCORP SYSTEMS — GLOBAL OPS NOMINAL</span>
+      <span class="ticker-item">⬛ NEW: ENTERPRISE ZERO-DAY BUNDLE — ₿ 12.4</span>
+      <span class="ticker-item">⬛ VOLUME: $4.2M / 24H — RECORD HIGH</span>
+      <span class="ticker-item">⬛ TIER-S SLOTS OPEN: 3 REMAINING</span>
+      <span class="ticker-item">⬛ LATTICE-128 ENCRYPTION — ALL CHANNELS SECURE</span>
+      <span class="ticker-item">⬛ NODES: 14,892 ACTIVE — UPTIME: 99.97%</span>
+      <span class="ticker-item">⬛ HELLCORP SYSTEMS — GLOBAL OPS NOMINAL</span>
+      <span class="ticker-item">⬛ NEW: ENTERPRISE ZERO-DAY BUNDLE — ₿ 12.4</span>
+      <span class="ticker-item">⬛ VOLUME: $4.2M / 24H — RECORD HIGH</span>
+      <span class="ticker-item">⬛ TIER-S SLOTS OPEN: 3 REMAINING</span>
+      <span class="ticker-item">⬛ LATTICE-128 ENCRYPTION — ALL CHANNELS SECURE</span>
+      <span class="ticker-item">⬛ NODES: 14,892 ACTIVE — UPTIME: 99.97%</span>
     </div>
+  </div>
 
-    <script src="/js/hge.js"></script>
-    <script>
-        // Matrix drizzle effect for flavor
-        const matrix = document.getElementById('matrix');
-        const chars = "10";
-        let content = "";
-        for(let i=0; i<5000; i++) {
-            content += chars[Math.floor(Math.random()*chars.length)] + (i % 80 === 0 ? "<br>" : " ");
-        }
-        matrix.innerHTML = content;
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">
+      HELL<em>CORP</em>
+      <small>ENTERPRISE THREAT SOLUTIONS — EST. 2019</small>
+    </div>
+    <div class="nav-links">
+      <a class="nav-link" href="/pages/dashboard.html">DASHBOARD</a>
+      <a class="nav-link" href="/pages/hr.html">PERSONNEL</a>
+      <a class="nav-link" href="/pages/ledger.html">LEDGER</a>
+      <a class="nav-link" href="/pages/ops.html">OPS</a>
+      <a class="nav-link" href="/pages/research.html">R&D</a>
+      <a class="nav-link danger" href="/login.html">AUTH</a>
+    </div>
+    <div class="nav-r">
+      <div class="dot"></div>
+      OPERATOR: <strong style="color:var(--white);margin-left:4px">GHOSTROOT</strong>
+      <div class="tier-badge">⬛ TIER-S</div>
+    </div>
+  </nav>
 
-        window.onload = () => {
-            if (HGE.getToken()) {
-                HGE.toast('Active session detected. Provisioning console...');
-            }
-        }
-    </script>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">HC</div>
+    <div class="hero-eyebrow">HELLCORP GLOBAL ENTERPRISE v4.8</div>
+    <div class="hero-h1">
+      <div class="glitch-text" data-t="ENTERPRISE">ENTERPRISE</div>
+      <div class="r">SOLUTIONS.</div>
+    </div>
+    <p class="hero-sub">
+      Precision-grade offensive tooling for qualified operators.
+      Zero paper trail. Cryptographically verified listings.
+      Non-negotiable operational security.
+    </p>
+    <div class="hero-cta">
+      <a href="/pages/dashboard.html" class="btn btn-r">⬛ ENTER DASHBOARD</a>
+      <a href="/login.html" class="btn btn-g">OPERATOR LOGIN</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hs">
+        <div class="hs-v" id="c1">0</div>
+        <div class="hs-l">Active Nodes</div>
+      </div>
+      <div class="hs">
+        <div class="hs-v">₿<em id="c2">0</em></div>
+        <div class="hs-l">Monthly Volume</div>
+      </div>
+      <div class="hs">
+        <div class="hs-v"><em id="c3">0</em>%</div>
+        <div class="hs-l">Uptime SLA</div>
+      </div>
+      <div class="hs">
+        <div class="hs-v"><em id="c4">0</em></div>
+        <div class="hs-l">Verified Operators</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BODY -->
+  <div class="body-grid">
+    <aside class="sidebar">
+      <div class="sb-section">
+        <div class="sb-label">Modules</div>
+        <a class="sb-item" href="/pages/dashboard.html"><div class="sb-ico">◉</div>Dashboard</a>
+        <a class="sb-item" href="/pages/hr.html"><div class="sb-ico">♟</div>Personnel</a>
+        <a class="sb-item" href="/pages/ledger.html"><div class="sb-ico">₿</div>Ledger</a>
+        <a class="sb-item" href="/pages/ops.html"><div class="sb-ico">⚙</div>Operations</a>
+        <a class="sb-item" href="/pages/research.html"><div class="sb-ico">◈</div>R&D Analytics</a>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">System</div>
+        <a class="sb-item" href="/login.html"><div class="sb-ico" style="color:var(--red)">⊘</div>Auth Node</a>
+      </div>
+    </aside>
+
+    <div class="content">
+      <div class="section-head">
+        <div class="section-title">QUICK <em>—</em> ACCESS</div>
+        <div class="section-meta">ENTERPRISE MODULES<br>SELECT NODE</div>
+      </div>
+
+      <div class="pgrid">
+        <a href="/pages/dashboard.html" class="card" style="text-decoration:none">
+          <div class="card-tag ts">CORE</div>
+          <div class="card-n">Global Ops Dashboard</div>
+          <p class="card-d">Real-time telemetry, activity feeds, and node health monitoring across HGE infrastructure.</p>
+          <div class="card-foot"><div style="font-size:9px;color:var(--off)">LIVE TELEMETRY</div><div class="card-btns"><button class="cbtn">→</button></div></div>
+          <div class="card-gline"></div>
+        </a>
+        <a href="/pages/hr.html" class="card" style="text-decoration:none">
+          <div class="card-tag">PERSONNEL</div>
+          <div class="card-n">HR / Personnel Directory</div>
+          <p class="card-d">Employee directory, dossier retrieval, and contract management via the HGE Vault.</p>
+          <div class="card-foot"><div style="font-size:9px;color:var(--off)">2,847 RECORDS</div><div class="card-btns"><button class="cbtn">→</button></div></div>
+          <div class="card-gline"></div>
+        </a>
+        <a href="/pages/ledger.html" class="card" style="text-decoration:none">
+          <div class="card-tag">FINANCE</div>
+          <div class="card-n">Capital Ledger</div>
+          <p class="card-d">Financial oversight, transaction monitoring, and internal credit provisioning between nodes.</p>
+          <div class="card-foot"><div style="font-size:9px;color:var(--off)">$14.2M Q3 REV</div><div class="card-btns"><button class="cbtn">→</button></div></div>
+          <div class="card-gline"></div>
+        </a>
+        <a href="/pages/ops.html" class="card" style="text-decoration:none">
+          <div class="card-tag tb">INFRA</div>
+          <div class="card-n">Infrastructure Operations</div>
+          <p class="card-d">Interactive diagnostic terminal, network probing, and global node management tools.</p>
+          <div class="card-foot"><div style="font-size:9px;color:var(--off)">14,892 NODES</div><div class="card-btns"><button class="cbtn">→</button></div></div>
+          <div class="card-gline"></div>
+        </a>
+        <a href="/pages/research.html" class="card" style="text-decoration:none">
+          <div class="card-tag ts">R&D</div>
+          <div class="card-n">Global Analytics</div>
+          <p class="card-d">Direct GraphQL data explorer with introspection capabilities and CSV data exports.</p>
+          <div class="card-foot"><div style="font-size:9px;color:var(--off)">GRAPHQL ENABLED</div><div class="card-btns"><button class="cbtn">→</button></div></div>
+          <div class="card-gline"></div>
+        </a>
+        <a href="/login.html" class="card" style="text-decoration:none">
+          <div class="card-tag" style="background:var(--red-dim)">AUTH</div>
+          <div class="card-n">Operator Authentication</div>
+          <p class="card-d">Establish an authenticated session to access full operator privileges and restricted data.</p>
+          <div class="card-foot"><div style="font-size:9px;color:var(--off)">SECURE GATEWAY</div><div class="card-btns"><button class="cbtn">→</button></div></div>
+          <div class="card-gline"></div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">HELL<em>CORP</em> © 2025</div>
+    <div>ENCRYPTED — ANONYMOUS — JURISDICTIONLESS</div>
+    <div style="display:flex;gap:20px">
+      <span>PGP VERIFIED</span>
+      <span style="color:var(--edge)">|</span>
+      <span>ESCROW PROTECTED</span>
+      <span style="color:var(--edge)">|</span>
+      <span>MONERO ACCEPTED</span>
+    </div>
+  </footer>
+
+</div>
+
+<script src="/js/hellcorp-core.js"></script>
+<script>
+window.addEventListener('load', () => {
+  HC.counter(document.getElementById('c1'), 14892);
+  HC.counter(document.getElementById('c2'), 847, 1100);
+  HC.counter(document.getElementById('c3'), 99, 900);
+  HC.counter(document.getElementById('c4'), 2847, 1600);
+});
+</script>
 </body>
 </html>

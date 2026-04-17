@@ -1,80 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUTH — HELLCORP GLOBAL ENTERPRISE</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/hge.css">
-    <style>
-        .auth-container {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--void);
-        }
-        .auth-card {
-            width: 400px;
-            padding: 40px;
-            background: var(--slab);
-            border: 1px solid var(--edge);
-            animation: animate-in 0.4s ease both;
-        }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HELLCORP — OPERATOR AUTHENTICATION</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/hellcorp-core.css"/>
 </head>
-<body class="hge-app">
-    <div class="auth-container">
-        <div class="auth-card">
-            <div style="text-align: center; margin-bottom: 32px;">
-                <div class="hge-logo" style="font-size: 32px; margin-bottom: 8px;">HELL<em>CORP</em></div>
-                <div style="font-size: 8px; color: var(--red); letter-spacing: 0.3em; text-transform: uppercase;">Operator Authentication</div>
-            </div>
+<body>
+<div class="app">
 
-            <form id="loginForm">
-                <div style="margin-bottom: 20px;">
-                    <label style="font-size: 8px; color: var(--off); letter-spacing: 0.1em; display: block; margin-bottom: 6px; text-transform: uppercase;">Operator ID</label>
-                    <input type="text" id="usernameInput" class="hge-input" placeholder="e.g. ghostroot" required autofocus>
-                </div>
-                <div style="margin-bottom: 32px;">
-                    <label style="font-size: 8px; color: var(--off); letter-spacing: 0.1em; display: block; margin-bottom: 6px; text-transform: uppercase;">Secret Key</label>
-                    <input type="password" id="passwordInput" class="hge-input" placeholder="••••••••" required>
-                </div>
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span class="ticker-item">⬛ HELLCORP SYSTEMS — GLOBAL OPS NOMINAL</span>
+      <span class="ticker-item">⬛ AUTHENTICATION NODE — SECURE CHANNEL</span>
+      <span class="ticker-item">⬛ LATTICE-128 ENCRYPTION — ALL CHANNELS SECURE</span>
+      <span class="ticker-item">⬛ NODES: 14,892 ACTIVE — UPTIME: 99.97%</span>
+      <span class="ticker-item">⬛ HELLCORP SYSTEMS — GLOBAL OPS NOMINAL</span>
+      <span class="ticker-item">⬛ AUTHENTICATION NODE — SECURE CHANNEL</span>
+      <span class="ticker-item">⬛ LATTICE-128 ENCRYPTION — ALL CHANNELS SECURE</span>
+      <span class="ticker-item">⬛ NODES: 14,892 ACTIVE — UPTIME: 99.97%</span>
+    </div>
+  </div>
 
-                <button type="submit" class="hge-btn hge-btn-primary" style="width: 100%; justify-content: center;">ESTABLISH SESSION →</button>
-            </form>
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">
+      HELL<em>CORP</em>
+      <small>ENTERPRISE THREAT SOLUTIONS — EST. 2019</small>
+    </div>
+    <div class="nav-links">
+      <a class="nav-link" href="/pages/dashboard.html">DASHBOARD</a>
+      <a class="nav-link" href="/pages/hr.html">PERSONNEL</a>
+      <a class="nav-link" href="/pages/ledger.html">LEDGER</a>
+      <a class="nav-link" href="/pages/ops.html">OPS</a>
+      <a class="nav-link" href="/pages/research.html">R&D</a>
+      <a class="nav-link active" href="/login.html">AUTH</a>
+    </div>
+    <div class="nav-r">
+      <div class="dot"></div>
+      SESSION: <strong style="color:var(--red);margin-left:4px">UNAUTHENTICATED</strong>
+    </div>
+  </nav>
 
-            <div style="margin-top: 32px; text-align: center;">
-                <p style="font-size: 8px; color: rgba(160,154,144,0.4); line-height: 1.6; text-transform: uppercase; letter-spacing: 0.1em;">
-                    Access to this node is strictly regulated. <br>
-                    IP metadata is sharded and logged globally.
-                </p>
-            </div>
+  <!-- HERO (login form) -->
+  <section class="hero">
+    <div class="hero-bg">HC</div>
+    <div class="hero-eyebrow">OPERATOR AUTHENTICATION — SECURE GATEWAY</div>
+    <div class="hero-h1">
+      <div class="glitch-text" data-t="ACCESS">ACCESS</div>
+      <div class="r">NODE.</div>
+    </div>
+    <p class="hero-sub">
+      Enter your personnel credentials to establish an authenticated session
+      with the HGE Core Network. All access attempts are logged and monitored.
+    </p>
+
+    <div style="max-width:420px;margin-top:8px">
+      <form id="loginForm">
+        <div style="margin-bottom:16px">
+          <div style="font-size:8px;letter-spacing:.3em;color:var(--red);text-transform:uppercase;margin-bottom:6px">OPERATOR ID</div>
+          <input class="search-input" style="border-right:1px solid var(--edge);width:100%" id="usernameInput" type="text" placeholder="USERNAME (e.g. ghostroot)" required autofocus/>
         </div>
+        <div style="margin-bottom:24px">
+          <div style="font-size:8px;letter-spacing:.3em;color:var(--red);text-transform:uppercase;margin-bottom:6px">SECRET KEY</div>
+          <input class="search-input" style="border-right:1px solid var(--edge);width:100%" id="passwordInput" type="password" placeholder="••••••••" required/>
+        </div>
+        <div class="hero-cta">
+          <button type="submit" class="btn btn-r">⬛ ESTABLISH SESSION</button>
+          <a href="/pages/dashboard.html" class="btn btn-g">CONTINUE AS GUEST</a>
+        </div>
+      </form>
     </div>
 
-    <!-- Scripts -->
-    <script src="/js/hge.js"></script>
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('usernameInput').value;
-            const password = document.getElementById('passwordInput').value;
+    <div class="hero-stats">
+      <div class="hs">
+        <div class="hs-v"><em id="c1">0</em></div>
+        <div class="hs-l">Active Sessions</div>
+      </div>
+      <div class="hs">
+        <div class="hs-v"><em id="c2">0</em>%</div>
+        <div class="hs-l">Auth Uptime</div>
+      </div>
+      <div class="hs">
+        <div class="hs-v"><em id="c3">0</em></div>
+        <div class="hs-l">Failed Attempts / 24h</div>
+      </div>
+      <div class="hs">
+        <div class="hs-v"><em id="c4">0</em></div>
+        <div class="hs-l">Verified Operators</div>
+      </div>
+    </div>
+  </section>
 
-            try {
-                const data = await HGE.api('/api/auth/login', {
-                    method: 'POST',
-                    body: JSON.stringify({ username, password })
-                });
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">HELL<em>CORP</em> © 2025</div>
+    <div>ENCRYPTED — ANONYMOUS — JURISDICTIONLESS</div>
+    <div style="display:flex;gap:20px">
+      <span>PGP VERIFIED</span>
+      <span style="color:var(--edge)">|</span>
+      <span>ESCROW PROTECTED</span>
+      <span style="color:var(--edge)">|</span>
+      <span>MONERO ACCEPTED</span>
+    </div>
+  </footer>
 
-                HGE.setToken(data.token);
-                HGE.toast('Session Established. Syncing with Global Core...');
-                setTimeout(() => window.location.href = '/dashboard', 1000);
-            } catch (err) {
-                HGE.toast(err.message || 'Authentication Rejected', 'error');
-            }
-        });
-    </script>
+</div>
+
+<script src="/js/hellcorp-core.js"></script>
+<script>
+window.addEventListener('load', () => {
+  HC.counter(document.getElementById('c1'), 289);
+  HC.counter(document.getElementById('c2'), 99, 900);
+  HC.counter(document.getElementById('c3'), 47, 800);
+  HC.counter(document.getElementById('c4'), 2847, 1600);
+});
+
+document.getElementById('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const u = document.getElementById('usernameInput').value;
+  const p = document.getElementById('passwordInput').value;
+  try {
+    const d = await HC.api('/api/auth/login', { method:'POST', body:JSON.stringify({username:u,password:p}) });
+    HC.setToken(d.token);
+    HC.toast('SESSION ESTABLISHED — SYNCING WITH HGE CORE...');
+    setTimeout(() => window.location.href = '/pages/dashboard.html', 1200);
+  } catch(err) {
+    HC.toast('AUTH REJECTED: ' + (err.message || 'INVALID CREDENTIALS'));
+  }
+});
+</script>
 </body>
 </html>

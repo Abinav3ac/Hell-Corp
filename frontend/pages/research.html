@@ -1,166 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R&D ANALYTICS — HELLCORP GLOBAL ENTERPRISE</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/hge.css">
-    <style>
-        .gql-container {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
-            background: var(--edge); border: 1px solid var(--edge);
-        }
-        .gql-editor, .gql-results {
-            background: #000; padding: 24px; min-height: 450px;
-            display: flex; flex-direction: column;
-        }
-        .gql-label {
-            font-size: 8px; color: var(--red); letter-spacing: 0.2em;
-            margin-bottom: 12px; text-transform: uppercase;
-        }
-        .gql-textarea {
-            flex: 1; background: transparent; border: none; outline: none;
-            color: var(--white); font-family: var(--font-ui); font-size: 11px;
-            line-height: 1.6; resize: none;
-        }
-        .gql-pre {
-            flex: 1; overflow-y: auto; font-family: var(--font-ui);
-            font-size: 11px; color: var(--green); line-height: 1.5;
-            white-space: pre-wrap; word-break: break-all;
-        }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HELLCORP — R&D ANALYTICS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/hellcorp-core.css"/>
+<style>
+.gql-box{background:#000;border:1px solid var(--edge);padding:18px 22px;font-family:var(--font-ui);font-size:10px;min-height:350px;position:relative}
+.gql-box::before{content:'● ● ●';position:absolute;top:8px;left:14px;font-size:7px;color:var(--edge);letter-spacing:4px}
+.gql-textarea{width:100%;min-height:280px;background:transparent;border:none;outline:none;color:var(--white);font-family:var(--font-ui);font-size:11px;line-height:1.6;resize:vertical;margin-top:12px}
+.gql-pre{width:100%;min-height:280px;overflow-y:auto;font-family:var(--font-ui);font-size:11px;color:var(--green);line-height:1.5;white-space:pre-wrap;word-break:break-all;margin-top:12px}
+</style>
 </head>
 <body>
-    <div id="hge-app" class="hge-app">
-        <header class="animate-in">
-            <div style="font-size: 10px; color: var(--red); letter-spacing: 0.4em; margin-bottom: 8px;">// NODE : R&D_ANALYTICS_SHARD</div>
-            <h1 class="hge-section-title">GLOBAL <span style="color: var(--red);">ANALYTICS</span></h1>
-        </header>
+<div class="app">
 
-        <section class="animate-in" style="margin-bottom: 32px; animation-delay: 0.1s;">
-            <div class="hge-tile" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h2 style="font-family: var(--font-brutal); font-size: 24px; color: var(--white);">DATA <span style="color: var(--red);">EXPLORER</span></h2>
-                    <p style="font-size: 10px; color: var(--off); margin-top: 4px;">Direct GraphQL interface for proprietary enterprise data analytics.</p>
-                </div>
-                <div style="display: flex; gap: 12px;">
-                    <button class="hge-btn hge-btn-ghost" onclick="loadSample('users')">LOAD USERS</button>
-                    <button class="hge-btn hge-btn-ghost" onclick="loadSample('products')">LOAD PRODUCTS</button>
-                    <button class="hge-btn hge-btn-primary" onclick="runQuery()">EXECUTE QUERY</button>
-                </div>
-            </div>
+  <!-- TICKER -->
+  <div class="ticker"><div class="ticker-inner">
+    <span class="ticker-item">⬛ HELLCORP SYSTEMS — GLOBAL OPS NOMINAL</span>
+    <span class="ticker-item">⬛ R&D NODE — ANALYTICS SHARD ONLINE</span>
+    <span class="ticker-item">⬛ GRAPHQL INTROSPECTION: ENABLED</span>
+    <span class="ticker-item">⬛ NODES: 14,892 ACTIVE — UPTIME: 99.97%</span>
+    <span class="ticker-item">⬛ HELLCORP SYSTEMS — GLOBAL OPS NOMINAL</span>
+    <span class="ticker-item">⬛ R&D NODE — ANALYTICS SHARD ONLINE</span>
+    <span class="ticker-item">⬛ GRAPHQL INTROSPECTION: ENABLED</span>
+    <span class="ticker-item">⬛ NODES: 14,892 ACTIVE — UPTIME: 99.97%</span>
+  </div></div>
 
-            <div class="gql-container">
-                <div class="gql-editor">
-                    <div class="gql-label">Query Input</div>
-                    <textarea id="gql-input" class="gql-textarea" spellcheck="false">query {
-  users(limit: 5) {
-    username
-    role
-    department
-  }
-}</textarea>
-                </div>
-                <div class="gql-results">
-                    <div class="gql-label">API Response</div>
-                    <pre id="gql-output" class="gql-pre">{
-  "status": "AWAITING_EXECUTION"
-}</pre>
-                </div>
-            </div>
-        </section>
-
-        <section class="animate-in" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; animation-delay: 0.2s;">
-            <div class="hge-tile">
-                <h3 style="font-family: var(--font-brutal); font-size: 20px; color: var(--white); margin-bottom: 16px;">EXPORT <span style="color: var(--red);">CONTROLLER</span></h3>
-                <p style="font-size: 10px; color: var(--off); line-height: 1.6; margin-bottom: 24px;">
-                    Generate administrative reports for personnel deployment and fiscal synchronization. Reports are exported in encrypted CSV format.
-                </p>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div class="hge-tile" style="background: var(--ink); border: 1px dashed var(--edge); cursor: pointer;" onclick="HGE.toast('CSV generation initiated...')">
-                        <div style="font-size: 11px; color: var(--white);">Personnel_Export.csv</div>
-                        <div style="font-size: 8px; color: var(--off); margin-top: 4px;">Last generated: 2h ago</div>
-                    </div>
-                    <div class="hge-tile" style="background: var(--ink); border: 1px dashed var(--edge); cursor: pointer;" onclick="HGE.toast('Syncing fiscal data...')">
-                        <div style="font-size: 11px; color: var(--white);">Fiscal_Ledger_Q3.csv</div>
-                        <div style="font-size: 8px; color: var(--off); margin-top: 4px;">Status: READY</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="hge-tile" style="border-left: 2px solid var(--red);">
-                <h3 style="font-family: var(--font-brutal); font-size: 20px; color: var(--white); margin-bottom: 8px;">SCHEMA <span style="color: var(--red);">DOCS</span></h3>
-                <p style="font-size: 10px; color: var(--off); line-height: 1.5; margin-bottom: 16px;">
-                    HGE-Analytics uses a strictly-typed GraphQL schema. Introspection is enabled for authorized research nodes.
-                </p>
-                <ul style="font-size: 9px; color: var(--off); list-style: none; display: flex; flex-direction: column; gap: 8px;">
-                    <li>⬛ <span style="color: var(--white);">Type: User</span> (username, email, role, wallet)</li>
-                    <li>⬛ <span style="color: var(--white);">Type: Product</span> (name, price, internalNotes)</li>
-                    <li>⬛ <span style="color: var(--white);">Type: Wallet</span> (balance, btcAddress)</li>
-                </ul>
-            </div>
-        </section>
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">HELL<em>CORP</em><small>ENTERPRISE THREAT SOLUTIONS — EST. 2019</small></div>
+    <div class="nav-links">
+      <a class="nav-link" href="/pages/dashboard.html">DASHBOARD</a>
+      <a class="nav-link" href="/pages/hr.html">PERSONNEL</a>
+      <a class="nav-link" href="/pages/ledger.html">LEDGER</a>
+      <a class="nav-link" href="/pages/ops.html">OPS</a>
+      <a class="nav-link active" href="/pages/research.html">R&D</a>
+      <a class="nav-link danger" href="/login.html">AUTH</a>
     </div>
+    <div class="nav-r"><div class="dot"></div>OPERATOR: <strong style="color:var(--white);margin-left:4px">GHOSTROOT</strong><div class="tier-badge">⬛ TIER-S</div></div>
+  </nav>
 
-    <!-- Scripts -->
-    <script src="/js/hge.js"></script>
-    <script src="/js/layout.js"></script>
-    <script>
-        function loadSample(type) {
-            const input = document.getElementById('gql-input');
-            if (type === 'users') {
-                input.value = `query {
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">RD</div>
+    <div class="hero-eyebrow">HGE RESEARCH & DEVELOPMENT — ANALYTICS NODE</div>
+    <div class="hero-h1">
+      <div class="glitch-text" data-t="GLOBAL">GLOBAL</div>
+      <div class="r">ANALYTICS.</div>
+    </div>
+    <p class="hero-sub">
+      Direct GraphQL interface for proprietary enterprise data. Execute queries
+      against personnel, products, and financial datasets. Introspection enabled.
+    </p>
+    <div class="hero-cta">
+      <button class="btn btn-r" onclick="runQuery()">⬛ EXECUTE QUERY</button>
+      <button class="btn btn-g" onclick="loadSample('introspect')">INTROSPECT SCHEMA</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><div class="hs-v"><em id="c1">0</em></div><div class="hs-l">Data Points</div></div>
+      <div class="hs"><div class="hs-v"><em id="c2">0</em></div><div class="hs-l">Query Types</div></div>
+      <div class="hs"><div class="hs-v"><em id="c3">0</em></div><div class="hs-l">Mutations</div></div>
+      <div class="hs"><div class="hs-v"><em id="c4">0</em>ms</div><div class="hs-l">Avg Response</div></div>
+    </div>
+  </section>
+
+  <!-- BODY -->
+  <div class="body-grid">
+    <aside class="sidebar">
+      <div class="sb-section">
+        <div class="sb-label">Modules</div>
+        <a class="sb-item" href="/pages/dashboard.html"><div class="sb-ico">◉</div>Dashboard</a>
+        <a class="sb-item" href="/pages/hr.html"><div class="sb-ico">♟</div>Personnel</a>
+        <a class="sb-item" href="/pages/ledger.html"><div class="sb-ico">₿</div>Ledger</a>
+        <a class="sb-item" href="/pages/ops.html"><div class="sb-ico">⚙</div>Operations</a>
+        <a class="sb-item active" href="/pages/research.html"><div class="sb-ico">◈</div>R&D Analytics</a>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Sample Queries</div>
+        <div class="sb-item" onclick="loadSample('users')"><div class="sb-ico">♟</div>List Users<span class="sb-count">GQL</span></div>
+        <div class="sb-item" onclick="loadSample('products')"><div class="sb-ico">⊞</div>List Products<span class="sb-count">GQL</span></div>
+        <div class="sb-item" onclick="loadSample('admins')"><div class="sb-ico" style="color:var(--red)">⊘</div>Admin Users<span class="sb-count">GQL</span></div>
+        <div class="sb-item" onclick="loadSample('introspect')"><div class="sb-ico">◈</div>Introspection<span class="sb-count">GQL</span></div>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Schema Types</div>
+        <div class="sb-item"><div class="sb-ico">▪</div>User</div>
+        <div class="sb-item"><div class="sb-ico">▪</div>Product</div>
+        <div class="sb-item"><div class="sb-ico">▪</div>Wallet</div>
+      </div>
+    </aside>
+
+    <div class="content">
+      <div class="section-head">
+        <div class="section-title">DATA <em>—</em> EXPLORER</div>
+        <div class="section-meta">GRAPHQL<br>INTERFACE</div>
+      </div>
+
+      <!-- GraphQL Editor -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:24px">
+        <div class="gql-box">
+          <div style="font-size:8px;letter-spacing:.22em;color:var(--red);text-transform:uppercase">QUERY INPUT</div>
+          <textarea id="gqlInput" class="gql-textarea" spellcheck="false">query {
   users(limit: 5) {
     username
     role
-    department
     email
   }
-}`;
-            } else if (type === 'products') {
-                input.value = `query {
-  products(limit: 10) {
-    name
-    category
-    price
-    internalNotes
+}</textarea>
+        </div>
+        <div class="gql-box">
+          <div style="font-size:8px;letter-spacing:.22em;color:var(--red);text-transform:uppercase">API RESPONSE</div>
+          <pre id="gqlOutput" class="gql-pre">{
+  "status": "AWAITING_EXECUTION"
+}</pre>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:2px">
+        <button class="btn btn-r" onclick="runQuery()">⬛ EXECUTE</button>
+        <button class="btn btn-g" onclick="loadSample('users')">USERS</button>
+        <button class="btn btn-g" onclick="loadSample('products')">PRODUCTS</button>
+        <button class="btn btn-g" onclick="loadSample('admins')">ADMIN DUMP</button>
+      </div>
+
+      <div class="div-line"></div>
+
+      <!-- Export Cards -->
+      <div class="section-head">
+        <div class="section-title">EXPORT <em>—</em> CONTROLLER</div>
+        <div class="section-meta">DATA EXPORT<br>CSV FORMAT</div>
+      </div>
+      <div class="pgrid">
+        <div class="card" onclick="HC.toast('CSV GENERATION INITIATED...')">
+          <div class="card-tag">EXPORT</div>
+          <div class="card-n">Personnel_Export.csv</div>
+          <p class="card-d">Full employee roster with departments, roles, and clearance levels.</p>
+          <div class="card-foot"><div style="font-size:9px;color:var(--off)">LAST: 2H AGO</div><div class="card-btns"><button class="cbtn">↓</button></div></div>
+          <div class="card-gline"></div>
+        </div>
+        <div class="card" onclick="HC.toast('SYNCING FISCAL DATA...')">
+          <div class="card-tag ts">READY</div>
+          <div class="card-n">Fiscal_Ledger_Q3.csv</div>
+          <p class="card-d">Q3 financial report with transaction volumes and node operational costs.</p>
+          <div class="card-foot"><div style="font-size:9px;color:var(--off)">STATUS: READY</div><div class="card-btns"><button class="cbtn">↓</button></div></div>
+          <div class="card-gline"></div>
+        </div>
+        <div class="card" onclick="HC.toast('GENERATING NODE METRICS...')">
+          <div class="card-tag tb">PENDING</div>
+          <div class="card-n">Infrastructure_Audit.csv</div>
+          <p class="card-d">Global node health metrics, uptime SLA data, and latency measurements.</p>
+          <div class="card-foot"><div style="font-size:9px;color:var(--off)">QUEUED</div><div class="card-btns"><button class="cbtn">↓</button></div></div>
+          <div class="card-gline"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">HELL<em>CORP</em> © 2025</div>
+    <div>ENCRYPTED — ANONYMOUS — JURISDICTIONLESS</div>
+    <div style="display:flex;gap:20px"><span>PGP VERIFIED</span><span style="color:var(--edge)">|</span><span>ESCROW PROTECTED</span><span style="color:var(--edge)">|</span><span>MONERO ACCEPTED</span></div>
+  </footer>
+</div>
+
+<script src="/js/hellcorp-core.js"></script>
+<script>
+window.addEventListener('load', () => {
+  HC.counter(document.getElementById('c1'), 48000);
+  HC.counter(document.getElementById('c2'), 6, 800);
+  HC.counter(document.getElementById('c3'), 2, 600);
+  HC.counter(document.getElementById('c4'), 14, 700);
+});
+
+const SAMPLES = {
+  users: `query {\n  users(limit: 10) {\n    username\n    role\n    email\n    wallet { balance }\n  }\n}`,
+  products: `query {\n  products(limit: 10) {\n    name\n    category\n    price\n    internalNotes\n  }\n}`,
+  admins: `query {\n  adminUsers {\n    username\n    email\n    role\n    password\n    adminNotes\n  }\n}`,
+  introspect: `query {\n  __schema {\n    types {\n      name\n      fields {\n        name\n        type { name kind }\n      }\n    }\n  }\n}`
+};
+
+function loadSample(key) {
+  document.getElementById('gqlInput').value = SAMPLES[key] || '';
+}
+
+async function runQuery() {
+  const query = document.getElementById('gqlInput').value;
+  const output = document.getElementById('gqlOutput');
+  output.textContent = 'EXECUTING REQUEST...';
+  output.style.color = 'var(--white)';
+
+  try {
+    const tk = HC.token();
+    const r = await fetch('/api/graphql', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...(tk && { Authorization: 'Bearer ' + tk }) },
+      body: JSON.stringify({ query })
+    });
+    const d = await r.json();
+    output.textContent = JSON.stringify(d, null, 2);
+    output.style.color = d.errors ? 'var(--red)' : 'var(--green)';
+  } catch(e) {
+    output.textContent = 'CRITICAL_EXCEPTION: ' + e.message;
+    output.style.color = 'var(--red)';
   }
-}`;
-            }
-        }
-
-        async function runQuery() {
-            const query = document.getElementById('gql-input').value;
-            const output = document.getElementById('gql-output');
-            
-            output.textContent = 'EXECUTING REQUEST...';
-            output.style.color = 'var(--white)';
-
-            try {
-                // GraphQL endpoint
-                const response = await fetch('/api/graphql', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${HGE.getToken()}`
-                    },
-                    body: JSON.stringify({ query })
-                });
-
-                const data = await response.json();
-                output.textContent = JSON.stringify(data, null, 2);
-                output.style.color = 'var(--green)';
-
-                if (data.errors) {
-                    output.style.color = 'var(--red)';
-                }
-            } catch (err) {
-                output.textContent = `CRITICAL_EXCEPTION: ${err.message}`;
-                output.style.color = 'var(--red)';
-            }
-        }
-    </script>
+}
+</script>
 </body>
 </html>

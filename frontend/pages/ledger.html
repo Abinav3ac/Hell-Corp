@@ -1,194 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAPITAL LEDGER — HELLCORP GLOBAL ENTERPRISE</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/hge.css">
-    <style>
-        .tx-card {
-            background: var(--ink); border: 1px solid var(--edge);
-            padding: 20px; margin-top: 24px; animation: animate-in 0.3s ease both;
-        }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HELLCORP — CAPITAL LEDGER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/hellcorp-core.css"/>
 </head>
 <body>
-    <div id="hge-app" class="hge-app">
-        <header class="animate-in">
-            <div style="font-size: 10px; color: var(--red); letter-spacing: 0.4em; margin-bottom: 8px;">// NODE : FINANCE_LEDGER_SYNC</div>
-            <h1 class="hge-section-title">CAPITAL <span style="color: var(--red);">LEDGER</span></h1>
-        </header>
+<div class="app">
 
-        <!-- Financial Overview Tiles -->
-        <section class="animate-in" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px; animation-delay: 0.1s;">
-            <div class="hge-tile">
-                <div style="font-size: 8px; color: var(--off); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">Q3 CORPORATE REVENUE</div>
-                <div style="font-family: var(--font-brutal); font-size: 44px; color: var(--white);">$14,200,000.50</div>
-                <div style="font-size: 9px; color: var(--green); margin-top: 4px;">↑ +8.4% SINCE PREVIOUS QUARTER</div>
-            </div>
-            <div class="hge-tile">
-                <div style="font-size: 8px; color: var(--off); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">OPERATIONAL BURN RATE</div>
-                <div style="font-family: var(--font-brutal); font-size: 44px; color: var(--white);">$980,000.00</div>
-                <div style="font-size: 9px; color: var(--red); margin-top: 4px;">↓ -2.1% OPTIMIZED THROUGH HGE-AUTO</div>
-            </div>
-            <div class="hge-tile" style="background: linear-gradient(135deg, rgba(255,165,0,0.05) 0%, transparent 100%);">
-                <div style="font-size: 8px; color: var(--off); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">AVG NODE OPERATIONAL COST</div>
-                <div style="font-family: var(--font-brutal); font-size: 44px; color: var(--white);">$21,000.00</div>
-                <div style="font-size: 9px; color: var(--off); margin-top: 4px;">per HGE-Regional Node / Month</div>
-            </div>
-        </section>
+  <!-- TICKER -->
+  <div class="ticker"><div class="ticker-inner">
+    <span class="ticker-item">⬛ HELLCORP SYSTEMS — GLOBAL OPS NOMINAL</span>
+    <span class="ticker-item">⬛ FINANCE NODE — LEDGER SYNC ACTIVE</span>
+    <span class="ticker-item">⬛ Q3 REVENUE: $14.2M — GROWTH: +8.4%</span>
+    <span class="ticker-item">⬛ NODES: 14,892 ACTIVE — UPTIME: 99.97%</span>
+    <span class="ticker-item">⬛ HELLCORP SYSTEMS — GLOBAL OPS NOMINAL</span>
+    <span class="ticker-item">⬛ FINANCE NODE — LEDGER SYNC ACTIVE</span>
+    <span class="ticker-item">⬛ Q3 REVENUE: $14.2M — GROWTH: +8.4%</span>
+    <span class="ticker-item">⬛ NODES: 14,892 ACTIVE — UPTIME: 99.97%</span>
+  </div></div>
 
-        <div style="display: grid; grid-template-columns: 2fr 1.2fr; gap: 32px;">
-            <!-- Transaction Ledger -->
-            <section class="animate-in" style="animation-delay: 0.2s;">
-                <div class="hge-tile">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                        <h2 style="font-family: var(--font-brutal); font-size: 24px; color: var(--white);">TRANSACTION <span style="color: var(--red);">STREAM</span></h2>
-                        <div style="display: flex; gap: 8px;">
-                            <input type="text" id="tx-search-id" class="hge-input" style="width: 180px; padding: 8px 12px;" placeholder="TX_ID (e.g. 65c...)">
-                            <button class="hge-btn hge-btn-primary" style="padding: 8px 16px;" onclick="searchTxById()">INSPECT</button>
-                        </div>
-                    </div>
-
-                    <div id="tx-inspect-result" style="display: none;">
-                        <!-- VULNERABLE: IDOR search result will appear here -->
-                    </div>
-
-                    <table class="hge-table" style="margin-top: 24px;">
-                        <thead>
-                            <tr>
-                                <th>TX_IDENTIFIER</th>
-                                <th>RECIPIENT</th>
-                                <th>AMOUNT</th>
-                                <th>TIMESTAMP</th>
-                                <th>STATUS</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ledger-tbody">
-                            <tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--off);">AWAITING SECURE SYNC...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Internal Transfer (Logic Vector) -->
-            <aside class="animate-in" style="animation-delay: 0.3s;">
-                <div class="hge-tile">
-                    <h3 style="font-family: var(--font-brutal); font-size: 20px; color: var(--white); margin-bottom: 8px;">INTERNAL <span style="color: var(--red);">TRANSFER</span></h3>
-                    <p style="font-size: 10px; color: var(--off); margin-bottom: 24px; line-height: 1.6;">
-                        Provision credits to other HGE Nodes or Operator Accounts. Transactions are cryptographically signed and irreversible.
-                    </p>
-
-                    <div style="display: flex; flex-direction: column; gap: 16px;">
-                        <div>
-                            <label style="font-size: 8px; color: var(--off); letter-spacing: 0.1em; display: block; margin-bottom: 4px;">TARGET ACCOUNT</label>
-                            <input type="text" id="transfer-target" class="hge-input" placeholder="USERNAME (e.g. ghostroot)">
-                        </div>
-                        <div>
-                            <label style="font-size: 8px; color: var(--off); letter-spacing: 0.1em; display: block; margin-bottom: 4px;">CREDIT AMOUNT ($)</label>
-                            <input type="number" id="transfer-amount" class="hge-input" placeholder="0.00">
-                        </div>
-                        <div>
-                            <label style="font-size: 8px; color: var(--off); letter-spacing: 0.1em; display: block; margin-bottom: 4px;">MEMO / REFERENCE</label>
-                            <input type="text" id="transfer-memo" class="hge-input" placeholder="e.g. INFRA_BONUS_Q3">
-                        </div>
-                        <button class="hge-btn hge-btn-primary" style="width: 100%; justify-content: center; margin-top: 8px;" onclick="executeTransfer()">INITIATE TRANSFER →</button>
-                    </div>
-                </div>
-
-                <div class="hge-tile" style="margin-top: 24px; border-left: 2px solid var(--off);">
-                    <h4 style="font-size: 10px; color: var(--white); margin-bottom: 8px;">LEDGER AUTHENTICITY</h4>
-                    <p style="font-size: 9px; color: var(--off); line-height: 1.5;">
-                        All HGE-Financial clusters are sharded across 16 global nodes. Reconciliation occurs every 300ms via HGE-Lattice consensus.
-                    </p>
-                </div>
-            </aside>
-        </div>
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">HELL<em>CORP</em><small>ENTERPRISE THREAT SOLUTIONS — EST. 2019</small></div>
+    <div class="nav-links">
+      <a class="nav-link" href="/pages/dashboard.html">DASHBOARD</a>
+      <a class="nav-link" href="/pages/hr.html">PERSONNEL</a>
+      <a class="nav-link active" href="/pages/ledger.html">LEDGER</a>
+      <a class="nav-link" href="/pages/ops.html">OPS</a>
+      <a class="nav-link" href="/pages/research.html">R&D</a>
+      <a class="nav-link danger" href="/login.html">AUTH</a>
     </div>
+    <div class="nav-r"><div class="dot"></div>OPERATOR: <strong style="color:var(--white);margin-left:4px">GHOSTROOT</strong><div class="tier-badge">⬛ TIER-S</div></div>
+  </nav>
 
-    <!-- Scripts -->
-    <script src="/js/hge.js"></script>
-    <script src="/js/layout.js"></script>
-    <script>
-        async function fetchLedger() {
-            try {
-                const data = await HGE.api('/api/finance/transactions?limit=20');
-                const tbody = document.getElementById('ledger-tbody');
-                tbody.innerHTML = '';
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">₿</div>
+    <div class="hero-eyebrow">HGE FINANCIAL OPERATIONS — LEDGER NODE</div>
+    <div class="hero-h1">
+      <div class="glitch-text" data-t="CAPITAL">CAPITAL</div>
+      <div class="r">LEDGER.</div>
+    </div>
+    <p class="hero-sub">
+      Corporate financial oversight, transaction monitoring, and internal
+      credit provisioning. All transfers are cryptographically signed.
+    </p>
+    <div class="hero-stats">
+      <div class="hs"><div class="hs-v">$<em id="c1">0</em></div><div class="hs-l">Q3 Revenue</div></div>
+      <div class="hs"><div class="hs-v">$<em id="c2">0</em></div><div class="hs-l">Burn Rate / Mo</div></div>
+      <div class="hs"><div class="hs-v"><em id="c3">0</em>%</div><div class="hs-l">Growth YoY</div></div>
+      <div class="hs"><div class="hs-v"><em id="c4">0</em></div><div class="hs-l">Active Nodes</div></div>
+    </div>
+  </section>
 
-                data.ledger.forEach(tx => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td style="font-family: var(--font-ui); color: var(--off); font-size: 9px;">${tx._id}</td>
-                        <td style="color: var(--white);">${tx.memo || 'SYSTEM_TRANSFER'}</td>
-                        <td style="color: ${tx.amount < 0 ? 'var(--red)' : 'var(--green)'};">${tx.amount < 0 ? '-' : '+'}$${Math.abs(tx.amount).toLocaleString()}</td>
-                        <td style="color: var(--off);">${new Date(tx.createdAt).toLocaleDateString()}</td>
-                        <td><span style="font-size: 8px; color: var(--green); border: 1px solid var(--green); padding: 1px 4px;">CLEARED</span></td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            } catch (err) {
-                HGE.toast('Ledger synchronization failed', 'error');
-            }
-        }
+  <!-- BODY -->
+  <div class="body-grid">
+    <aside class="sidebar">
+      <div class="sb-section">
+        <div class="sb-label">Modules</div>
+        <a class="sb-item" href="/pages/dashboard.html"><div class="sb-ico">◉</div>Dashboard</a>
+        <a class="sb-item" href="/pages/hr.html"><div class="sb-ico">♟</div>Personnel</a>
+        <a class="sb-item active" href="/pages/ledger.html"><div class="sb-ico">₿</div>Ledger</a>
+        <a class="sb-item" href="/pages/ops.html"><div class="sb-ico">⚙</div>Operations</a>
+        <a class="sb-item" href="/pages/research.html"><div class="sb-ico">◈</div>R&D Analytics</a>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Actions</div>
+        <div class="sb-item" onclick="document.getElementById('txSection').scrollIntoView({behavior:'smooth'})"><div class="sb-ico">⊞</div>TX Inspector</div>
+        <div class="sb-item" onclick="document.getElementById('transferSection').scrollIntoView({behavior:'smooth'})"><div class="sb-ico">↗</div>Transfer Credits</div>
+      </div>
+    </aside>
 
-        async function searchTxById() {
-            const txId = document.getElementById('tx-search-id').value;
-            if (!txId) return HGE.toast('Enter TX identifier', 'error');
+    <div class="content">
+      <!-- STATS -->
+      <div class="stat-strip">
+        <div class="stat-tile"><div class="stat-v">$14.2M</div><div class="stat-l">Q3 Revenue</div><div class="stat-d">↑ +8.4%</div></div>
+        <div class="stat-tile"><div class="stat-v">$980K</div><div class="stat-l">Burn Rate</div><div class="stat-d">↓ -2.1% optimized</div></div>
+        <div class="stat-tile"><div class="stat-v">$21K</div><div class="stat-l">Node Cost / Mo</div><div class="stat-d">per regional node</div></div>
+        <div class="stat-tile"><div class="stat-v">3,420</div><div class="stat-l">TX / 24h</div><div class="stat-d">↑ +147 since midnight</div></div>
+      </div>
 
-            try {
-                // VULNERABLE: IDOR - Fetching transaction by ID with no ownership check on backend
-                const tx = await HGE.api(`/api/finance/transactions?txId=${txId}`);
-                const resultDiv = document.getElementById('tx-inspect-result');
-                resultDiv.style.display = 'block';
-                resultDiv.innerHTML = `
-                    <div class="tx-card">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                            <div>
-                                <div style="font-size: 8px; color: var(--red);">TX_INSPECT_RESULT</div>
-                                <div style="font-family: var(--font-ui); font-size: 11px; color: var(--white);">${tx._id}</div>
-                            </div>
-                            <button class="hge-btn hge-btn-ghost" style="padding: 4px 8px;" onclick="document.getElementById('tx-inspect-result').style.display='none'">✕</button>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 11px;">
-                            <div><span style="color: var(--off);">Originator:</span> ${tx.buyer?.username || 'SYSTEM'}</div>
-                            <div><span style="color: var(--off);">Status:</span> <span style="color: var(--green);">SETTLED</span></div>
-                            <div><span style="color: var(--off);">Amount:</span> $${tx.amount.toLocaleString()}</div>
-                            <div><span style="color: var(--off);">Date:</span> ${new Date(tx.createdAt).toLocaleString()}</div>
-                        </div>
-                    </div>
-                `;
-            } catch (err) {
-                HGE.toast('Transaction record not found or access denied', 'error');
-            }
-        }
+      <div class="div-line"></div>
 
-        async function executeTransfer() {
-            const toAccount = document.getElementById('transfer-target').value;
-            const amount = document.getElementById('transfer-amount').value;
-            const memo = document.getElementById('transfer-memo').value;
+      <!-- TX INSPECTOR (IDOR vector) -->
+      <div class="section-head" id="txSection">
+        <div class="section-title">TRANSACTION <em>—</em> STREAM</div>
+        <div class="section-meta">LEDGER SYNC<br>REAL-TIME</div>
+      </div>
+      <div class="search-row">
+        <input class="search-input" id="txSearchId" placeholder="INSPECT TX BY ID (paste MongoDB ObjectId)"/>
+        <button class="search-btn" onclick="searchTxById()">INSPECT</button>
+      </div>
+      <div id="txInspectResult" style="display:none;margin-bottom:24px"></div>
 
-            if (!toAccount || !amount) return HGE.toast('Required parameters missing', 'error');
+      <div style="background:var(--slab);border:1px solid var(--edge)">
+        <table class="hc-table">
+          <thead><tr><th>TX_ID</th><th>MEMO</th><th>AMOUNT</th><th>DATE</th><th>STATUS</th></tr></thead>
+          <tbody id="ledgerTbody">
+            <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--off)">AWAITING SECURE SYNC...</td></tr>
+          </tbody>
+        </table>
+      </div>
 
-            try {
-                // VULNERABLE: Business Logic - Backend doesn't check for negative amounts
-                const result = await HGE.api('/api/finance/transfer', {
-                    method: 'POST',
-                    body: JSON.stringify({ toAccount, amount, memo })
-                });
+      <div class="div-line"></div>
 
-                HGE.toast(`Transfer Successful: ${result.transaction_id}`);
-                fetchLedger();
-            } catch (err) {
-                HGE.toast(err.message, 'error');
-            }
-        }
+      <!-- TRANSFER (Business Logic vector) -->
+      <div class="section-head" id="transferSection">
+        <div class="section-title">INTERNAL <em>—</em> TRANSFER</div>
+        <div class="section-meta">NODE-TO-NODE<br>CREDIT PROVISION</div>
+      </div>
+      <div class="pgrid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:24px">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:8px;letter-spacing:.3em;color:var(--red)">TARGET ACCOUNT</div>
+          <input class="search-input" style="border-right:1px solid var(--edge)" id="transferTarget" placeholder="USERNAME"/>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:8px;letter-spacing:.3em;color:var(--red)">AMOUNT ($)</div>
+          <input class="search-input" style="border-right:1px solid var(--edge)" id="transferAmount" type="number" placeholder="0.00"/>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:8px;letter-spacing:.3em;color:var(--red)">MEMO</div>
+          <input class="search-input" style="border-right:1px solid var(--edge)" id="transferMemo" placeholder="INFRA_BONUS_Q3"/>
+        </div>
+      </div>
+      <button class="btn btn-r" onclick="executeTransfer()" style="animation:pulse-red 2.5s infinite">⬛ INITIATE TRANSFER →</button>
+    </div>
+  </div>
 
-        window.onload = () => {
-            setTimeout(fetchLedger, 500);
-        };
-    </script>
+  <footer>
+    <div class="footer-logo">HELL<em>CORP</em> © 2025</div>
+    <div>ENCRYPTED — ANONYMOUS — JURISDICTIONLESS</div>
+    <div style="display:flex;gap:20px"><span>PGP VERIFIED</span><span style="color:var(--edge)">|</span><span>ESCROW PROTECTED</span><span style="color:var(--edge)">|</span><span>MONERO ACCEPTED</span></div>
+  </footer>
+</div>
+
+<script src="/js/hellcorp-core.js"></script>
+<script>
+window.addEventListener('load', () => {
+  HC.counter(document.getElementById('c1'), 14200000);
+  HC.counter(document.getElementById('c2'), 980000, 1100);
+  HC.counter(document.getElementById('c3'), 8, 800);
+  HC.counter(document.getElementById('c4'), 14892, 1600);
+  setTimeout(fetchLedger, 500);
+});
+
+async function fetchLedger() {
+  try {
+    const d = await HC.api('/api/finance/transactions?limit=20');
+    const tbody = document.getElementById('ledgerTbody');
+    tbody.innerHTML = '';
+    (d.ledger||[]).forEach((tx,i) => {
+      const tr = document.createElement('tr');
+      tr.style.animationDelay = `${i*.03}s`;
+      tr.innerHTML = `
+        <td style="font-size:9px;color:var(--off)">${tx._id}</td>
+        <td>${tx.memo||'SYSTEM'}</td>
+        <td style="color:${tx.amount<0?'var(--red)':'var(--green)'};">${tx.amount<0?'-':'+'}$${Math.abs(tx.amount).toLocaleString()}</td>
+        <td style="color:var(--off)">${new Date(tx.createdAt).toLocaleDateString()}</td>
+        <td><span style="font-size:7px;color:var(--green);border:1px solid var(--green);padding:1px 4px;letter-spacing:.15em">CLEARED</span></td>`;
+      tbody.appendChild(tr);
+    });
+  } catch(e) { HC.toast('LEDGER SYNC FAILED'); }
+}
+
+async function searchTxById() {
+  const txId = document.getElementById('txSearchId').value;
+  if (!txId) return HC.toast('TX IDENTIFIER REQUIRED');
+  try {
+    // VULNERABLE: IDOR — fetch any TX by ID
+    const tx = await HC.api(`/api/finance/transactions?txId=${txId}`);
+    const out = document.getElementById('txInspectResult');
+    out.style.display = 'block';
+    out.innerHTML = `<div class="card" style="cursor:default"><div class="card-tag ts">TX INSPECT</div>
+      <div class="card-n">${tx._id}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:11px">
+        <div><span style="color:var(--off)">Originator:</span> ${tx.buyer?.username||'SYSTEM'}</div>
+        <div><span style="color:var(--off)">Amount:</span> $${tx.amount.toLocaleString()}</div>
+        <div><span style="color:var(--off)">Date:</span> ${new Date(tx.createdAt).toLocaleString()}</div>
+        <div><span style="color:var(--off)">Status:</span> <span style="color:var(--green)">SETTLED</span></div>
+      </div><div class="card-gline"></div></div>`;
+  } catch(e) { HC.toast('TX NOT FOUND OR ACCESS DENIED'); }
+}
+
+async function executeTransfer() {
+  const toAccount = document.getElementById('transferTarget').value;
+  const amount = document.getElementById('transferAmount').value;
+  const memo = document.getElementById('transferMemo').value;
+  if (!toAccount || !amount) return HC.toast('MISSING REQUIRED PARAMETERS');
+  try {
+    // VULNERABLE: Business Logic — backend allows negative amounts
+    const r = await HC.api('/api/finance/transfer', { method:'POST', body:JSON.stringify({toAccount,amount,memo}) });
+    HC.toast('TRANSFER SUCCESS: ' + r.transaction_id);
+    fetchLedger();
+  } catch(e) { HC.toast(e.message); }
+}
+</script>
 </body>
 </html>

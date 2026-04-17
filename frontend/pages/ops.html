@@ -1,166 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OPERATIONS — HELLCORP GLOBAL ENTERPRISE</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/hge.css">
-    <style>
-        .terminal-container {
-            background: #000; border: 1px solid var(--edge);
-            padding: 24px; font-family: var(--font-ui);
-            min-height: 400px; display: flex; flex-direction: column;
-        }
-        .terminal-line { line-height: 1.8; font-size: 11px; margin-bottom: 4px; }
-        .terminal-cmd { color: var(--red); font-weight: bold; }
-        .terminal-out { color: var(--white); white-space: pre-wrap; word-break: break-all; opacity: 0.85; }
-        .terminal-input-row { display: flex; gap: 12px; margin-top: 12px; }
-        .terminal-prompt { color: var(--red); font-weight: bold; flex-shrink: 0; }
-        .terminal-input {
-            background: transparent; border: none; outline: none;
-            color: var(--white); font-family: var(--font-ui); font-size: 11px;
-            flex: 1;
-        }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HELLCORP — INFRASTRUCTURE OPERATIONS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/hellcorp-core.css"/>
 </head>
 <body>
-    <div id="hge-app" class="hge-app">
-        <header class="animate-in">
-            <div style="font-size: 10px; color: var(--red); letter-spacing: 0.4em; margin-bottom: 8px;">// NODE : INFRASTRUCTURE_CONTROL_HUB</div>
-            <h1 class="hge-section-title">SYSTEM <span style="color: var(--red);">OPERATIONS</span></h1>
-        </header>
+<div class="app">
 
-        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 32px;">
-            <!-- Node Health & SSRF -->
-            <aside class="animate-in" style="display: flex; flex-direction: column; gap: 24px; animation-delay: 0.1s;">
-                <div class="hge-tile">
-                    <h2 style="font-family: var(--font-brutal); font-size: 20px; color: var(--white); margin-bottom: 8px;">NODE <span style="color: var(--red);">HEALTH</span></h2>
-                    <p style="font-size: 10px; color: var(--off); margin-bottom: 20px; line-height: 1.6;">
-                        Query the status of global HGE shards. Use internal node identifiers or IP addresses within the 10.x.x.x range.
-                    </p>
-                    
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <input type="text" id="node-target" class="hge-input" placeholder="NODE_ID or IP (e.g. 10.0.1.42)">
-                        <input type="text" id="node-service" class="hge-input" placeholder="SERVICE (default: status)">
-                        <button class="hge-btn hge-btn-primary" onclick="checkNodeHealth()">PROBE NODE →</button>
-                    </div>
+  <!-- TICKER -->
+  <div class="ticker"><div class="ticker-inner">
+    <span class="ticker-item">⬛ HELLCORP SYSTEMS — GLOBAL OPS NOMINAL</span>
+    <span class="ticker-item">⬛ OPS NODE — INFRASTRUCTURE CONTROL HUB</span>
+    <span class="ticker-item">⬛ DIAGNOSTIC TOOLS: PING / TRACEROUTE / PROBE</span>
+    <span class="ticker-item">⬛ NODES: 14,892 ACTIVE — UPTIME: 99.97%</span>
+    <span class="ticker-item">⬛ HELLCORP SYSTEMS — GLOBAL OPS NOMINAL</span>
+    <span class="ticker-item">⬛ OPS NODE — INFRASTRUCTURE CONTROL HUB</span>
+    <span class="ticker-item">⬛ DIAGNOSTIC TOOLS: PING / TRACEROUTE / PROBE</span>
+    <span class="ticker-item">⬛ NODES: 14,892 ACTIVE — UPTIME: 99.97%</span>
+  </div></div>
 
-                    <div id="health-output" style="margin-top: 24px; font-size: 10px; display: none;">
-                        <!-- SSRF results -->
-                    </div>
-                </div>
-
-                <div class="hge-tile" style="border-left: 2px solid var(--yellow);">
-                    <h3 style="font-size: 9px; color: var(--white); letter-spacing: 0.1em; margin-bottom: 6px;">OPERATIONAL ALERT</h3>
-                    <p style="font-size: 10px; color: var(--off); line-height: 1.5;">
-                        Recent interference detected on node HGE-AMS-04. Infrastructure team investigating potential lattice-oscillation anomaly.
-                    </p>
-                </div>
-            </aside>
-
-            <!-- Diagnostic Terminal & CMD Injection -->
-            <section class="animate-in" style="animation-delay: 0.2s;">
-                <div class="terminal-container">
-                    <div id="terminal-screen" style="flex: 1; overflow-y: auto;">
-                        <div class="terminal-line">HGE-OPERATIONS COMMAND INTERFACE v9.1.2 [AUTHENTICATED]</div>
-                        <div class="terminal-line">NODE: HGE-CENTRAL-STORAGE-01</div>
-                        <div class="terminal-line" style="color: var(--off); opacity: 0.3;">----------------------------------------------------------</div>
-                    </div>
-                    
-                    <div class="terminal-input-row">
-                        <div class="terminal-prompt">root@hge-ops:~#</div>
-                        <select id="diag-type" style="background: var(--ink); color: var(--red); border: 1px solid var(--edge); font-family: var(--font-ui); font-size: 10px; outline: none;">
-                            <option value="ping">ping</option>
-                            <option value="traceroute">traceroute</option>
-                        </select>
-                        <input type="text" id="diag-target" class="terminal-input" placeholder="ENTER TARGET IP/HOST" onkeydown="if(event.key==='Enter') runDiagnostic()">
-                    </div>
-                    <div style="font-size: 8px; color: var(--off); margin-top: 8px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5;">
-                        Diagnostic tools are logged for audit purposes under directive HGE-772-B.
-                    </div>
-                </div>
-
-                <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;">
-                    <button class="hge-btn hge-btn-ghost" onclick="clearTerminal()">CLEAR INTERFACE</button>
-                    <button class="hge-btn hge-btn-primary" onclick="runDiagnostic()">EXECUTE DIAGNOSTIC</button>
-                </div>
-            </section>
-        </div>
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">HELL<em>CORP</em><small>ENTERPRISE THREAT SOLUTIONS — EST. 2019</small></div>
+    <div class="nav-links">
+      <a class="nav-link" href="/pages/dashboard.html">DASHBOARD</a>
+      <a class="nav-link" href="/pages/hr.html">PERSONNEL</a>
+      <a class="nav-link" href="/pages/ledger.html">LEDGER</a>
+      <a class="nav-link active" href="/pages/ops.html">OPS</a>
+      <a class="nav-link" href="/pages/research.html">R&D</a>
+      <a class="nav-link danger" href="/login.html">AUTH</a>
     </div>
+    <div class="nav-r"><div class="dot"></div>OPERATOR: <strong style="color:var(--white);margin-left:4px">GHOSTROOT</strong><div class="tier-badge">⬛ TIER-S</div></div>
+  </nav>
 
-    <!-- Scripts -->
-    <script src="/js/hge.js"></script>
-    <script src="/js/layout.js"></script>
-    <script>
-        async function checkNodeHealth() {
-            const node = document.getElementById('node-target').value;
-            const service = document.getElementById('node-service').value || 'status';
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">OP</div>
+    <div class="hero-eyebrow">HGE INFRASTRUCTURE CONTROL — OPS NODE</div>
+    <div class="hero-h1">
+      <div class="glitch-text" data-t="SYSTEM">SYSTEM</div>
+      <div class="r">OPERATIONS.</div>
+    </div>
+    <p class="hero-sub">
+      Interactive diagnostics, node probing, and infrastructure management.
+      Execute network tools against global HGE shards and endpoints.
+    </p>
+    <div class="hero-cta">
+      <button class="btn btn-r" onclick="document.getElementById('termSection').scrollIntoView({behavior:'smooth'})">⬛ OPEN TERMINAL</button>
+      <button class="btn btn-g" onclick="document.getElementById('probeSection').scrollIntoView({behavior:'smooth'})">NODE PROBE</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><div class="hs-v" id="c1">0</div><div class="hs-l">Global Nodes</div></div>
+      <div class="hs"><div class="hs-v"><em id="c2">0</em>%</div><div class="hs-l">Uptime SLA</div></div>
+      <div class="hs"><div class="hs-v"><em id="c3">0</em>ms</div><div class="hs-l">Avg Latency</div></div>
+      <div class="hs"><div class="hs-v"><em id="c4">0</em></div><div class="hs-l">Diag / 24h</div></div>
+    </div>
+  </section>
 
-            if (!node) return HGE.toast('Node target required', 'error');
+  <!-- BODY -->
+  <div class="body-grid">
+    <aside class="sidebar">
+      <div class="sb-section">
+        <div class="sb-label">Modules</div>
+        <a class="sb-item" href="/pages/dashboard.html"><div class="sb-ico">◉</div>Dashboard</a>
+        <a class="sb-item" href="/pages/hr.html"><div class="sb-ico">♟</div>Personnel</a>
+        <a class="sb-item" href="/pages/ledger.html"><div class="sb-ico">₿</div>Ledger</a>
+        <a class="sb-item active" href="/pages/ops.html"><div class="sb-ico">⚙</div>Operations</a>
+        <a class="sb-item" href="/pages/research.html"><div class="sb-ico">◈</div>R&D Analytics</a>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Tools</div>
+        <div class="sb-item" onclick="setTool('ping')"><div class="sb-ico">⚡</div>Ping<span class="sb-count">CLI</span></div>
+        <div class="sb-item" onclick="setTool('traceroute')"><div class="sb-ico">↗</div>Traceroute<span class="sb-count">CLI</span></div>
+      </div>
+    </aside>
 
-            try {
-                // VULNERABLE: SSRF endpoint
-                const data = await HGE.api(`/api/infrastructure/health?node=${node}&service=${service}`);
-                const out = document.getElementById('health-output');
-                out.style.display = 'block';
-                out.innerHTML = `
-                    <div style="background: var(--ink); border: 1px solid var(--edge); padding: 16px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid var(--edge); padding-bottom: 8px;">
-                            <span style="color: var(--white); font-weight: bold;">NODE RESPONSE</span>
-                            <span style="color: var(--green);">${data.latency_ms}ms</span>
-                        </div>
-                        <div style="font-family: var(--font-ui); font-size: 9px; color: var(--white); white-space: pre-wrap; word-break: break-all;">${data.response_preview}</div>
-                    </div>
-                `;
-            } catch (err) {
-                HGE.toast('Node probe failed', 'error');
-            }
-        }
+    <div class="content">
+      <!-- NODE PROBE (SSRF vector) -->
+      <div class="section-head" id="probeSection">
+        <div class="section-title">NODE <em>—</em> PROBE</div>
+        <div class="section-meta">SSRF-CAPABLE<br>HEALTH MONITOR</div>
+      </div>
+      <div class="search-row">
+        <input class="search-input" id="probeNode" placeholder="NODE_ID OR IP (e.g. 10.0.1.42, 169.254.169.254)"/>
+        <input class="search-input" style="max-width:200px" id="probeService" placeholder="SERVICE (default: status)"/>
+        <button class="search-btn" onclick="probeNode()">PROBE →</button>
+      </div>
+      <div id="probeOut" style="display:none;margin-bottom:24px"></div>
 
-        async function runDiagnostic() {
-            const target = document.getElementById('diag-target').value;
-            const type = document.getElementById('diag-type').value;
+      <div class="div-line"></div>
 
-            if (!target) return HGE.toast('Diagnostic target required', 'error');
+      <!-- DIAGNOSTIC TERMINAL (Command Injection vector) -->
+      <div class="section-head" id="termSection">
+        <div class="section-title">DIAGNOSTIC <em>—</em> TERMINAL</div>
+        <div class="section-meta">OS COMMAND<br>INTERFACE</div>
+      </div>
 
-            const screen = document.getElementById('terminal-screen');
-            const line = document.createElement('div');
-            line.className = 'terminal-line';
-            line.innerHTML = `<span class="terminal-cmd">root@hge-ops:~#</span> ${type} ${target}`;
-            screen.appendChild(line);
-            
-            try {
-                // VULNERABLE: OS Command Injection endpoint
-                const data = await HGE.api('/api/infrastructure/diagnostic', {
-                    method: 'POST',
-                    body: JSON.stringify({ target, type })
-                });
+      <div class="terminal">
+        <div class="t-body" id="termScreen">
+          <div>HGE-OPERATIONS COMMAND INTERFACE v9.1.2 [AUTHENTICATED]</div>
+          <div>NODE: HGE-CENTRAL-STORAGE-01</div>
+          <div style="color:var(--edge)">----------------------------------------------------------</div>
+        </div>
+      </div>
 
-                const outLine = document.createElement('div');
-                outLine.className = 'terminal-line terminal-out';
-                outLine.textContent = data.output;
-                screen.appendChild(outLine);
-                
-                // Auto scroll
-                screen.scrollTop = screen.scrollHeight;
-            } catch (err) {
-                const errLine = document.createElement('div');
-                errLine.className = 'terminal-line';
-                errLine.style.color = 'var(--red)';
-                errLine.textContent = `[SYSTEM_ERROR] : ${err.message}`;
-                screen.appendChild(errLine);
-            }
-            
-            document.getElementById('diag-target').value = '';
-        }
+      <div style="display:flex;gap:2px;margin-top:2px">
+        <select id="diagType" style="background:var(--slab);color:var(--red);border:1px solid var(--edge);font-family:var(--font-ui);font-size:10px;padding:11px 14px;outline:none;cursor:pointer">
+          <option value="ping">ping</option>
+          <option value="traceroute">traceroute</option>
+        </select>
+        <input class="search-input" id="diagTarget" placeholder="TARGET IP / HOST" onkeydown="if(event.key==='Enter') runDiag()"/>
+        <button class="search-btn" onclick="runDiag()">EXECUTE</button>
+        <button class="flt-btn" onclick="clearTerm()">CLEAR</button>
+      </div>
+    </div>
+  </div>
 
-        function clearTerminal() {
-            document.getElementById('terminal-screen').innerHTML = `
-                <div class="terminal-line">HGE-OPERATIONS COMMAND INTERFACE v9.1.2 [RESET OK]</div>
-            `;
-        }
-    </script>
+  <footer>
+    <div class="footer-logo">HELL<em>CORP</em> © 2025</div>
+    <div>ENCRYPTED — ANONYMOUS — JURISDICTIONLESS</div>
+    <div style="display:flex;gap:20px"><span>PGP VERIFIED</span><span style="color:var(--edge)">|</span><span>ESCROW PROTECTED</span><span style="color:var(--edge)">|</span><span>MONERO ACCEPTED</span></div>
+  </footer>
+</div>
+
+<script src="/js/hellcorp-core.js"></script>
+<script>
+window.addEventListener('load', () => {
+  HC.counter(document.getElementById('c1'), 14892);
+  HC.counter(document.getElementById('c2'), 99, 900);
+  HC.counter(document.getElementById('c3'), 12, 800);
+  HC.counter(document.getElementById('c4'), 847, 1100);
+});
+
+function setTool(t) { document.getElementById('diagType').value = t; }
+
+async function probeNode() {
+  const node = document.getElementById('probeNode').value;
+  const svc = document.getElementById('probeService').value || 'status';
+  if (!node) return HC.toast('NODE TARGET REQUIRED');
+  try {
+    // VULNERABLE: SSRF
+    const d = await HC.api(`/api/infrastructure/health?node=${node}&service=${svc}`);
+    const out = document.getElementById('probeOut');
+    out.style.display = 'block';
+    out.innerHTML = `<div class="card" style="cursor:default">
+      <div class="card-tag ts">NODE RESPONSE — ${d.latency_ms}ms</div>
+      <div class="card-n">${d.node}</div>
+      <p style="font-size:10px;color:var(--white);line-height:1.75;white-space:pre-wrap;word-break:break-all;background:#000;padding:14px;border:1px solid var(--edge)">${d.response_preview||'No preview.'}</p>
+      <div class="card-gline"></div></div>`;
+  } catch(e) { HC.toast('NODE PROBE FAILED'); }
+}
+
+async function runDiag() {
+  const target = document.getElementById('diagTarget').value;
+  const type = document.getElementById('diagType').value;
+  if (!target) return HC.toast('TARGET REQUIRED');
+
+  const screen = document.getElementById('termScreen');
+  const cmdLine = document.createElement('div');
+  cmdLine.innerHTML = `<span class="t-cmd">root@hge-ops:~#</span> ${type} ${target}`;
+  screen.appendChild(cmdLine);
+
+  try {
+    // VULNERABLE: OS Command Injection
+    const d = await HC.api('/api/infrastructure/diagnostic', { method:'POST', body:JSON.stringify({target,type}) });
+    const outLine = document.createElement('div');
+    outLine.style.cssText = 'color:var(--white);white-space:pre-wrap;word-break:break-all';
+    outLine.textContent = d.output;
+    screen.appendChild(outLine);
+  } catch(e) {
+    const errLine = document.createElement('div');
+    errLine.style.color = 'var(--red)';
+    errLine.textContent = '[ERROR] ' + e.message;
+    screen.appendChild(errLine);
+  }
+
+  // Add blinking cursor
+  const cur = document.createElement('div');
+  cur.innerHTML = `<span class="t-cmd">root@hge-ops:~#</span><span class="t-cur"></span>`;
+  screen.appendChild(cur);
+  screen.scrollTop = screen.scrollHeight;
+  document.getElementById('diagTarget').value = '';
+}
+
+function clearTerm() {
+  document.getElementById('termScreen').innerHTML = '<div>HGE-OPS TERMINAL RESET OK</div><div style="color:var(--edge)">----------------------------------------------------------</div>';
+}
+</script>
 </body>
 </html>
