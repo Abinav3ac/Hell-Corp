@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DASHBOARD — HELLCORP GLOBAL ENTERPRISE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/hge.css">
+</head>
+<body>
+    <div id="hge-app" class="hge-app">
+        <!-- Dashboard Header -->
+        <header class="animate-in" style="margin-bottom: 40px;">
+            <div style="font-size: 10px; color: var(--red); letter-spacing: 0.4em; margin-bottom: 8px;">// OPS MONITOR : ACTIVE</div>
+            <h1 class="hge-section-title">GLOBAL <span style="color: var(--red);">OVERVIEW</span></h1>
+            <p style="color: var(--off); font-size: 12px; max-width: 600px; line-height: 1.8;">
+                Welcome to HGE Central Control. Monitor global node throughput, financial flow, and personnel activity from this unified interface.
+            </p>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="animate-in" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-bottom: 40px; animation-delay: 0.1s;">
+            <div class="hge-tile" style="border-left: 3px solid var(--red);">
+                <div style="font-family: var(--font-brutal); font-size: 32px; color: var(--white);" class="hge-stat-fluctuate">14,892</div>
+                <div style="font-size: 9px; color: var(--off); letter-spacing: 0.2em; text-transform: uppercase; margin-top: 4px;">Active Nodes</div>
+            </div>
+            <div class="hge-tile" style="border-left: 3px solid var(--green);">
+                <div style="font-family: var(--font-brutal); font-size: 32px; color: var(--white);">99.98%</div>
+                <div style="font-size: 9px; color: var(--off); letter-spacing: 0.2em; text-transform: uppercase; margin-top: 4px;">Uptime SLA</div>
+            </div>
+            <div class="hge-tile" style="border-left: 3px solid var(--yellow);">
+                <div style="font-family: var(--font-brutal); font-size: 32px; color: var(--white);" class="hge-stat-fluctuate">$4.2M</div>
+                <div style="font-size: 9px; color: var(--off); letter-spacing: 0.2em; text-transform: uppercase; margin-top: 4px;">Daily Flow</div>
+            </div>
+            <div class="hge-tile" style="border-left: 3px solid var(--off);">
+                <div style="font-family: var(--font-brutal); font-size: 32px; color: var(--white);">2,847</div>
+                <div style="font-size: 9px; color: var(--off); letter-spacing: 0.2em; text-transform: uppercase; margin-top: 4px;">Verified Ops</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1.2fr; gap: 24px;">
+            <!-- Activity Feed (XSS Vector) -->
+            <section class="animate-in" style="animation-delay: 0.2s;">
+                <div class="hge-tile" style="height: 100%;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h2 style="font-family: var(--font-brutal); font-size: 24px; color: var(--white);">INTERNAL <span style="color: var(--red);">LOGS</span></h2>
+                        <button class="hge-btn hge-btn-ghost" onclick="fetchActivity()">REFRESH</button>
+                    </div>
+                    
+                    <div id="activity-feed" style="font-size: 11px; line-height: 2;">
+                        <!-- VULNERABLE: Data from API will be rendered with .innerHTML -->
+                        <div style="color: var(--off); opacity: 0.5;">Awaiting data stream from HGE-Audit-Sync...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <aside class="animate-in" style="display: flex; flex-direction: column; gap: 24px; animation-delay: 0.3s;">
+                <div class="hge-tile">
+                    <h3 style="font-family: var(--font-brutal); font-size: 18px; color: var(--white); margin-bottom: 16px;">NODE HEALTH MON</h3>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <input type="text" id="node-id" class="hge-input" placeholder="ENTER NODE IDENTIFIER (e.g. node-01)">
+                        <button class="hge-btn hge-btn-primary" onclick="checkNode()">RUN HEALTHCHECK</button>
+                    </div>
+                    <div id="node-status-out" style="margin-top: 16px; font-size: 10px; color: var(--off); display: none;">
+                        <!-- SSRF results will show here -->
+                    </div>
+                </div>
+
+                <div class="hge-tile" style="background: linear-gradient(135deg, rgba(255,26,26,0.1) 0%, transparent 100%);">
+                    <h3 style="font-family: var(--font-brutal); font-size: 18px; color: var(--white); margin-bottom: 12px;">SECURE CHANNELS</h3>
+                    <p style="font-size: 10px; color: var(--off); margin-bottom: 20px;">HGE-Lattice encryption is currently active for all inter-node communications.</p>
+                    <a href="/pages/ops.html" class="hge-btn hge-btn-ghost" style="width: 100%; justify-content: center;">MANAGE INFRASTRUCTURE</a>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/hge.js"></script>
+    <script src="/js/layout.js"></script>
+    <script>
+        async function fetchActivity() {
+            try {
+                // Fetch from Audit Logs (assuming backend route exists or forum)
+                const data = await HGE.api('/api/forum'); // Using forum for demo XSS
+                const feed = document.getElementById('activity-feed');
+                feed.innerHTML = '';
+                
+                data.posts.forEach(post => {
+                    const item = document.createElement('div');
+                    item.style.padding = '12px 0';
+                    item.style.borderBottom = '1px solid var(--edge)';
+                    // VULNERABLE: Direct innerHTML injection from authorName and content
+                    item.innerHTML = `
+                        <span style="color: var(--red); font-weight: bold;">[${new Date(post.createdAt).toLocaleTimeString()}]</span>
+                        <span style="color: var(--white); cursor: pointer;" onclick="HGE.toast('User context: ${post.authorName}')">${post.authorName}</span>: 
+                        ${post.title}
+                    `;
+                    feed.appendChild(item);
+                });
+                
+                if (data.posts.length === 0) {
+                    feed.innerHTML = '<div style="color: var(--off);">No recent activity in HGE sync buffer.</div>';
+                }
+            } catch (err) {
+                HGE.toast('Failed to sync activity stream', 'error');
+            }
+        }
+
+        async function checkNode() {
+            const nodeId = document.getElementById('node-id').value;
+            if (!nodeId) return HGE.toast('Enter a node identifier', 'error');
+
+            try {
+                // VULNERABLE: This endpoint is susceptible to SSRF
+                const data = await HGE.api(`/api/infrastructure/health?node=${nodeId}`);
+                const out = document.getElementById('node-status-out');
+                out.style.display = 'block';
+                out.innerHTML = `
+                    <div style="border-top: 1px solid var(--edge); padding-top: 12px;">
+                        <div style="color: var(--green); margin-bottom: 4px;">[STATUS: OK] Node responsive</div>
+                        <div style="font-family: var(--font-ui); font-size: 9px; background: #000; padding: 10px; border: 1px solid var(--edge);">
+                            ${data.response_preview || 'No diagnostic preview available.'}
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                HGE.toast('Node connection failure', 'error');
+            }
+        }
+
+        window.onload = () => {
+            setTimeout(fetchActivity, 500);
+        };
+    </script>
+</body>
+</html>

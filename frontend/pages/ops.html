@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPERATIONS — HELLCORP GLOBAL ENTERPRISE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/hge.css">
+    <style>
+        .terminal-container {
+            background: #000; border: 1px solid var(--edge);
+            padding: 24px; font-family: var(--font-ui);
+            min-height: 400px; display: flex; flex-direction: column;
+        }
+        .terminal-line { line-height: 1.8; font-size: 11px; margin-bottom: 4px; }
+        .terminal-cmd { color: var(--red); font-weight: bold; }
+        .terminal-out { color: var(--white); white-space: pre-wrap; word-break: break-all; opacity: 0.85; }
+        .terminal-input-row { display: flex; gap: 12px; margin-top: 12px; }
+        .terminal-prompt { color: var(--red); font-weight: bold; flex-shrink: 0; }
+        .terminal-input {
+            background: transparent; border: none; outline: none;
+            color: var(--white); font-family: var(--font-ui); font-size: 11px;
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="hge-app" class="hge-app">
+        <header class="animate-in">
+            <div style="font-size: 10px; color: var(--red); letter-spacing: 0.4em; margin-bottom: 8px;">// NODE : INFRASTRUCTURE_CONTROL_HUB</div>
+            <h1 class="hge-section-title">SYSTEM <span style="color: var(--red);">OPERATIONS</span></h1>
+        </header>
+
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 32px;">
+            <!-- Node Health & SSRF -->
+            <aside class="animate-in" style="display: flex; flex-direction: column; gap: 24px; animation-delay: 0.1s;">
+                <div class="hge-tile">
+                    <h2 style="font-family: var(--font-brutal); font-size: 20px; color: var(--white); margin-bottom: 8px;">NODE <span style="color: var(--red);">HEALTH</span></h2>
+                    <p style="font-size: 10px; color: var(--off); margin-bottom: 20px; line-height: 1.6;">
+                        Query the status of global HGE shards. Use internal node identifiers or IP addresses within the 10.x.x.x range.
+                    </p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <input type="text" id="node-target" class="hge-input" placeholder="NODE_ID or IP (e.g. 10.0.1.42)">
+                        <input type="text" id="node-service" class="hge-input" placeholder="SERVICE (default: status)">
+                        <button class="hge-btn hge-btn-primary" onclick="checkNodeHealth()">PROBE NODE →</button>
+                    </div>
+
+                    <div id="health-output" style="margin-top: 24px; font-size: 10px; display: none;">
+                        <!-- SSRF results -->
+                    </div>
+                </div>
+
+                <div class="hge-tile" style="border-left: 2px solid var(--yellow);">
+                    <h3 style="font-size: 9px; color: var(--white); letter-spacing: 0.1em; margin-bottom: 6px;">OPERATIONAL ALERT</h3>
+                    <p style="font-size: 10px; color: var(--off); line-height: 1.5;">
+                        Recent interference detected on node HGE-AMS-04. Infrastructure team investigating potential lattice-oscillation anomaly.
+                    </p>
+                </div>
+            </aside>
+
+            <!-- Diagnostic Terminal & CMD Injection -->
+            <section class="animate-in" style="animation-delay: 0.2s;">
+                <div class="terminal-container">
+                    <div id="terminal-screen" style="flex: 1; overflow-y: auto;">
+                        <div class="terminal-line">HGE-OPERATIONS COMMAND INTERFACE v9.1.2 [AUTHENTICATED]</div>
+                        <div class="terminal-line">NODE: HGE-CENTRAL-STORAGE-01</div>
+                        <div class="terminal-line" style="color: var(--off); opacity: 0.3;">----------------------------------------------------------</div>
+                    </div>
+                    
+                    <div class="terminal-input-row">
+                        <div class="terminal-prompt">root@hge-ops:~#</div>
+                        <select id="diag-type" style="background: var(--ink); color: var(--red); border: 1px solid var(--edge); font-family: var(--font-ui); font-size: 10px; outline: none;">
+                            <option value="ping">ping</option>
+                            <option value="traceroute">traceroute</option>
+                        </select>
+                        <input type="text" id="diag-target" class="terminal-input" placeholder="ENTER TARGET IP/HOST" onkeydown="if(event.key==='Enter') runDiagnostic()">
+                    </div>
+                    <div style="font-size: 8px; color: var(--off); margin-top: 8px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5;">
+                        Diagnostic tools are logged for audit purposes under directive HGE-772-B.
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;">
+                    <button class="hge-btn hge-btn-ghost" onclick="clearTerminal()">CLEAR INTERFACE</button>
+                    <button class="hge-btn hge-btn-primary" onclick="runDiagnostic()">EXECUTE DIAGNOSTIC</button>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/hge.js"></script>
+    <script src="/js/layout.js"></script>
+    <script>
+        async function checkNodeHealth() {
+            const node = document.getElementById('node-target').value;
+            const service = document.getElementById('node-service').value || 'status';
+
+            if (!node) return HGE.toast('Node target required', 'error');
+
+            try {
+                // VULNERABLE: SSRF endpoint
+                const data = await HGE.api(`/api/infrastructure/health?node=${node}&service=${service}`);
+                const out = document.getElementById('health-output');
+                out.style.display = 'block';
+                out.innerHTML = `
+                    <div style="background: var(--ink); border: 1px solid var(--edge); padding: 16px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid var(--edge); padding-bottom: 8px;">
+                            <span style="color: var(--white); font-weight: bold;">NODE RESPONSE</span>
+                            <span style="color: var(--green);">${data.latency_ms}ms</span>
+                        </div>
+                        <div style="font-family: var(--font-ui); font-size: 9px; color: var(--white); white-space: pre-wrap; word-break: break-all;">${data.response_preview}</div>
+                    </div>
+                `;
+            } catch (err) {
+                HGE.toast('Node probe failed', 'error');
+            }
+        }
+
+        async function runDiagnostic() {
+            const target = document.getElementById('diag-target').value;
+            const type = document.getElementById('diag-type').value;
+
+            if (!target) return HGE.toast('Diagnostic target required', 'error');
+
+            const screen = document.getElementById('terminal-screen');
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+            line.innerHTML = `<span class="terminal-cmd">root@hge-ops:~#</span> ${type} ${target}`;
+            screen.appendChild(line);
+            
+            try {
+                // VULNERABLE: OS Command Injection endpoint
+                const data = await HGE.api('/api/infrastructure/diagnostic', {
+                    method: 'POST',
+                    body: JSON.stringify({ target, type })
+                });
+
+                const outLine = document.createElement('div');
+                outLine.className = 'terminal-line terminal-out';
+                outLine.textContent = data.output;
+                screen.appendChild(outLine);
+                
+                // Auto scroll
+                screen.scrollTop = screen.scrollHeight;
+            } catch (err) {
+                const errLine = document.createElement('div');
+                errLine.className = 'terminal-line';
+                errLine.style.color = 'var(--red)';
+                errLine.textContent = `[SYSTEM_ERROR] : ${err.message}`;
+                screen.appendChild(errLine);
+            }
+            
+            document.getElementById('diag-target').value = '';
+        }
+
+        function clearTerminal() {
+            document.getElementById('terminal-screen').innerHTML = `
+                <div class="terminal-line">HGE-OPERATIONS COMMAND INTERFACE v9.1.2 [RESET OK]</div>
+            `;
+        }
+    </script>
+</body>
+</html>

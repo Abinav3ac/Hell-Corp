@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R&D ANALYTICS — HELLCORP GLOBAL ENTERPRISE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/hge.css">
+    <style>
+        .gql-container {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+            background: var(--edge); border: 1px solid var(--edge);
+        }
+        .gql-editor, .gql-results {
+            background: #000; padding: 24px; min-height: 450px;
+            display: flex; flex-direction: column;
+        }
+        .gql-label {
+            font-size: 8px; color: var(--red); letter-spacing: 0.2em;
+            margin-bottom: 12px; text-transform: uppercase;
+        }
+        .gql-textarea {
+            flex: 1; background: transparent; border: none; outline: none;
+            color: var(--white); font-family: var(--font-ui); font-size: 11px;
+            line-height: 1.6; resize: none;
+        }
+        .gql-pre {
+            flex: 1; overflow-y: auto; font-family: var(--font-ui);
+            font-size: 11px; color: var(--green); line-height: 1.5;
+            white-space: pre-wrap; word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div id="hge-app" class="hge-app">
+        <header class="animate-in">
+            <div style="font-size: 10px; color: var(--red); letter-spacing: 0.4em; margin-bottom: 8px;">// NODE : R&D_ANALYTICS_SHARD</div>
+            <h1 class="hge-section-title">GLOBAL <span style="color: var(--red);">ANALYTICS</span></h1>
+        </header>
+
+        <section class="animate-in" style="margin-bottom: 32px; animation-delay: 0.1s;">
+            <div class="hge-tile" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 style="font-family: var(--font-brutal); font-size: 24px; color: var(--white);">DATA <span style="color: var(--red);">EXPLORER</span></h2>
+                    <p style="font-size: 10px; color: var(--off); margin-top: 4px;">Direct GraphQL interface for proprietary enterprise data analytics.</p>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="hge-btn hge-btn-ghost" onclick="loadSample('users')">LOAD USERS</button>
+                    <button class="hge-btn hge-btn-ghost" onclick="loadSample('products')">LOAD PRODUCTS</button>
+                    <button class="hge-btn hge-btn-primary" onclick="runQuery()">EXECUTE QUERY</button>
+                </div>
+            </div>
+
+            <div class="gql-container">
+                <div class="gql-editor">
+                    <div class="gql-label">Query Input</div>
+                    <textarea id="gql-input" class="gql-textarea" spellcheck="false">query {
+  users(limit: 5) {
+    username
+    role
+    department
+  }
+}</textarea>
+                </div>
+                <div class="gql-results">
+                    <div class="gql-label">API Response</div>
+                    <pre id="gql-output" class="gql-pre">{
+  "status": "AWAITING_EXECUTION"
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="animate-in" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; animation-delay: 0.2s;">
+            <div class="hge-tile">
+                <h3 style="font-family: var(--font-brutal); font-size: 20px; color: var(--white); margin-bottom: 16px;">EXPORT <span style="color: var(--red);">CONTROLLER</span></h3>
+                <p style="font-size: 10px; color: var(--off); line-height: 1.6; margin-bottom: 24px;">
+                    Generate administrative reports for personnel deployment and fiscal synchronization. Reports are exported in encrypted CSV format.
+                </p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="hge-tile" style="background: var(--ink); border: 1px dashed var(--edge); cursor: pointer;" onclick="HGE.toast('CSV generation initiated...')">
+                        <div style="font-size: 11px; color: var(--white);">Personnel_Export.csv</div>
+                        <div style="font-size: 8px; color: var(--off); margin-top: 4px;">Last generated: 2h ago</div>
+                    </div>
+                    <div class="hge-tile" style="background: var(--ink); border: 1px dashed var(--edge); cursor: pointer;" onclick="HGE.toast('Syncing fiscal data...')">
+                        <div style="font-size: 11px; color: var(--white);">Fiscal_Ledger_Q3.csv</div>
+                        <div style="font-size: 8px; color: var(--off); margin-top: 4px;">Status: READY</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hge-tile" style="border-left: 2px solid var(--red);">
+                <h3 style="font-family: var(--font-brutal); font-size: 20px; color: var(--white); margin-bottom: 8px;">SCHEMA <span style="color: var(--red);">DOCS</span></h3>
+                <p style="font-size: 10px; color: var(--off); line-height: 1.5; margin-bottom: 16px;">
+                    HGE-Analytics uses a strictly-typed GraphQL schema. Introspection is enabled for authorized research nodes.
+                </p>
+                <ul style="font-size: 9px; color: var(--off); list-style: none; display: flex; flex-direction: column; gap: 8px;">
+                    <li>⬛ <span style="color: var(--white);">Type: User</span> (username, email, role, wallet)</li>
+                    <li>⬛ <span style="color: var(--white);">Type: Product</span> (name, price, internalNotes)</li>
+                    <li>⬛ <span style="color: var(--white);">Type: Wallet</span> (balance, btcAddress)</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/hge.js"></script>
+    <script src="/js/layout.js"></script>
+    <script>
+        function loadSample(type) {
+            const input = document.getElementById('gql-input');
+            if (type === 'users') {
+                input.value = `query {
+  users(limit: 5) {
+    username
+    role
+    department
+    email
+  }
+}`;
+            } else if (type === 'products') {
+                input.value = `query {
+  products(limit: 10) {
+    name
+    category
+    price
+    internalNotes
+  }
+}`;
+            }
+        }
+
+        async function runQuery() {
+            const query = document.getElementById('gql-input').value;
+            const output = document.getElementById('gql-output');
+            
+            output.textContent = 'EXECUTING REQUEST...';
+            output.style.color = 'var(--white)';
+
+            try {
+                // GraphQL endpoint
+                const response = await fetch('/api/graphql', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${HGE.getToken()}`
+                    },
+                    body: JSON.stringify({ query })
+                });
+
+                const data = await response.json();
+                output.textContent = JSON.stringify(data, null, 2);
+                output.style.color = 'var(--green)';
+
+                if (data.errors) {
+                    output.style.color = 'var(--red)';
+                }
+            } catch (err) {
+                output.textContent = `CRITICAL_EXCEPTION: ${err.message}`;
+                output.style.color = 'var(--red)';
+            }
+        }
+    </script>
+</body>
+</html>

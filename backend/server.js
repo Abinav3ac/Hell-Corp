@@ -60,6 +60,18 @@ app.use('/static', express.static(path.join(__dirname, 'public'), {
   dotfiles: 'allow'
 }));
 
+// HGE Management Portal - Frontend Serving
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Page Routing (Friendly URLs)
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../frontend/index.html')));
+app.get('/login', (req, res) => res.sendFile(path.join(__dirname, '../frontend/login.html')));
+app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, '../frontend/pages/dashboard.html')));
+app.get('/hr', (req, res) => res.sendFile(path.join(__dirname, '../frontend/pages/hr.html')));
+app.get('/ledger', (req, res) => res.sendFile(path.join(__dirname, '../frontend/pages/ledger.html')));
+app.get('/ops', (req, res) => res.sendFile(path.join(__dirname, '../frontend/pages/ops.html')));
+app.get('/research', (req, res) => res.sendFile(path.join(__dirname, '../frontend/pages/research.html')));
+
 // ─── Core Enterprise Modules ──────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);

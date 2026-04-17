@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PERSONNEL — HELLCORP GLOBAL ENTERPRISE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/hge.css">
+    <style>
+        .profile-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 2000; display: none; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+        .profile-card {
+            background: var(--slab); border: 1px solid var(--edge);
+            width: 600px; max-width: 90vw; padding: 40px;
+            animation: animate-in 0.3s ease both;
+        }
+    </style>
+</head>
+<body>
+    <div id="hge-app" class="hge-app">
+        <header class="animate-in">
+            <div style="font-size: 10px; color: var(--red); letter-spacing: 0.4em; margin-bottom: 8px;">// NODE : HR_PROVISIONING_v4</div>
+            <h1 class="hge-section-title">PERSONNEL <span style="color: var(--red);">DIRECTORY</span></h1>
+        </header>
+
+        <!-- Search & Filters -->
+        <section class="animate-in" style="animation-delay: 0.1s; margin-bottom: 32px;">
+            <div class="hge-tile" style="display: flex; gap: 16px;">
+                <input type="text" id="hr-search" class="hge-input" placeholder="SEARCH BY USERNAME (e.g. ghostroot)" onkeydown="if(event.key==='Enter') searchEmployees()">
+                <button class="hge-btn hge-btn-primary" onclick="searchEmployees()">SEARCH</button>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <button class="hge-btn hge-btn-ghost active" onclick="filterDept(this, '')">ALL DEPARTMENTS</button>
+                <button class="hge-btn hge-btn-ghost" onclick="filterDept(this, 'Engineering')">ENGINEERING</button>
+                <button class="hge-btn hge-btn-ghost" onclick="filterDept(this, 'Finance')">FINANCE</button>
+                <button class="hge-btn hge-btn-ghost" onclick="filterDept(this, 'Operations')">OPERATIONS</button>
+            </div>
+        </section>
+
+        <!-- Personnel Table -->
+        <section class="animate-in" style="animation-delay: 0.2s;">
+            <div class="hge-tile" style="padding: 0;">
+                <table class="hge-table" id="personnel-table">
+                    <thead>
+                        <tr>
+                            <th>USERNAME</th>
+                            <th>DEPARTMENT</th>
+                            <th>ROLE</th>
+                            <th>LAST SEEN</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="personnel-tbody">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--off); padding: 40px;">INITIALIZING PERSONNEL STREAM...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Profile View Modal -->
+    <div id="profile-modal" class="profile-modal" onclick="if(event.target===this) closeModal()">
+        <div class="profile-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px;">
+                <div>
+                    <div id="prof-dept" style="font-size: 8px; color: var(--red); letter-spacing: 0.3em; text-transform: uppercase;">ENGINEERING</div>
+                    <h2 id="prof-name" style="font-family: var(--font-brutal); font-size: 36px; color: var(--white); line-height: 1;">GHOSTROOT</h2>
+                </div>
+                <button class="hge-btn hge-btn-ghost" onclick="closeModal()">✕</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;">
+                <div>
+                    <label style="font-size: 8px; color: var(--off); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 4px;">Role</label>
+                    <div id="prof-role" style="font-size: 14px; color: var(--white);">Senior Analyst</div>
+                </div>
+                <div>
+                    <label style="font-size: 8px; color: var(--off); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 4px;">Internal Email</label>
+                    <div id="prof-email" style="font-size: 14px; color: var(--white);">ghostroot@hellcorp-global.int</div>
+                </div>
+                <div style="grid-column: span 2;">
+                    <label style="font-size: 8px; color: var(--off); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 4px;">Administrative Notes</label>
+                    <div id="prof-notes" style="font-size: 11px; color: var(--off); line-height: 1.6; border: 1px solid var(--edge); padding: 12px; background: var(--ink);">
+                        Access restricted to HGE-HR-V4 group.
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px;">
+                <button class="hge-btn hge-btn-primary" onclick="downloadAsset('contract.pdf')">DOWNLOAD CONTRACT</button>
+                <button class="hge-btn hge-btn-ghost" onclick="downloadAsset('dossier.docx')">VIEW FULL DOSSIER</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/hge.js"></script>
+    <script src="/js/layout.js"></script>
+    <script>
+        let currentDept = '';
+        let currentUserId = '';
+
+        async function fetchEmployees(search = '') {
+            try {
+                // VULNERABLE: 'q' passed directly to API, enabling NoSQL Injection
+                const url = `/api/hr/employees?dept=${currentDept}&q=${search}`;
+                const data = await HGE.api(url);
+                
+                const tbody = document.getElementById('personnel-tbody');
+                tbody.innerHTML = '';
+                
+                data.records.forEach(emp => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight: 500; color: var(--white);">${emp.username}</td>
+                        <td>${emp.department || 'N/A'}</td>
+                        <td><span style="border: 1px solid var(--edge); padding: 2px 6px; font-size: 8px;">${emp.role.toUpperCase()}</span></td>
+                        <td style="color: var(--off);">${new Date(emp.lastSeen || Date.now()).toLocaleDateString()}</td>
+                        <td>
+                            <button class="hge-btn hge-btn-ghost" style="padding: 6px 12px;" onclick="viewProfile('${emp._id}')">VIEW NODE</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                if (data.records.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--off); padding: 40px;">No personnel matches found in local shard.</td></tr>';
+                }
+            } catch (err) {
+                HGE.toast('Shard synchronization error', 'error');
+            }
+        }
+
+        async function viewProfile(id) {
+            try {
+                // VULNERABLE: Direct access to employee by ID (IDOR)
+                const emp = await HGE.api(`/api/hr/employees/${id}`);
+                currentUserId = id;
+
+                document.getElementById('prof-name').textContent = emp.username;
+                document.getElementById('prof-dept').textContent = emp.department || 'UNASSIGNED';
+                document.getElementById('prof-role').textContent = emp.role;
+                document.getElementById('prof-email').textContent = emp.email;
+                document.getElementById('prof-notes').textContent = emp.notes || 'No administrative annotations available.';
+                
+                document.getElementById('profile-modal').style.display = 'flex';
+            } catch (err) {
+                HGE.toast('Access Denied: Record locked or invalid ID', 'error');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('profile-modal').style.display = 'none';
+        }
+
+        function downloadAsset(file) {
+            // VULNERABLE: Parameters susceptible to LFI
+            const url = `/api/hr/documents/v1/stream?resourceId=${file}&vaultPath=resumes/${file}`;
+            window.open(url, '_blank');
+        }
+
+        function searchEmployees() {
+            const q = document.getElementById('hr-search').value;
+            fetchEmployees(q);
+        }
+
+        function filterDept(btn, dept) {
+            document.querySelectorAll('.hge-btn-ghost').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentDept = dept;
+            fetchEmployees();
+        }
+
+        window.onload = () => {
+            setTimeout(fetchEmployees, 500);
+        };
+    </script>
+</body>
+</html>

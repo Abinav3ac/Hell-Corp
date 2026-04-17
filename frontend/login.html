@@ -3,102 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authentication | Hellcorp Global Enterprise</title>
-    <link rel="stylesheet" href="/css/hellcorp.css">
-    <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+    <title>AUTH — HELLCORP GLOBAL ENTERPRISE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/hge.css">
     <style>
-        .auth-wrapper {
-            min-height: 100vh;
+        .auth-container {
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(circle at top right, #0f172a 0%, #0a0c10 100%);
-            position: relative;
-            overflow: hidden;
+            background: var(--void);
         }
-        .auth-wrapper::before {
-            content: '';
-            position: absolute;
-            width: 150%;
-            height: 150%;
-            background-image: radial-gradient(rgba(56, 139, 253, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            transform: rotate(-15deg);
-            z-index: 0;
-        }
-        .login-card {
-            width: 100%;
-            max-width: 400px;
-            z-index: 1;
-            position: relative;
-            animation: fadeInUp 0.6s ease forwards;
-        }
-        .login-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        .login-logo {
-            width: 48px;
-            height: 48px;
-            background: var(--brand-primary);
-            border-radius: var(--radius-md);
-            margin: 0 auto 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: white;
-            box-shadow: 0 0 20px var(--brand-glow);
+        .auth-card {
+            width: 400px;
+            padding: 40px;
+            background: var(--slab);
+            border: 1px solid var(--edge);
+            animation: animate-in 0.4s ease both;
         }
     </style>
 </head>
-<body>
-
-    <div class="auth-wrapper">
-        <div class="login-card">
-            <div class="login-header">
-                <div class="login-logo">H</div>
-                <h1 style="font-size: 1.5rem; margin-bottom: 8px;">Access Corporate Portal</h1>
-                <p style="color: var(--text-secondary); font-size: 0.875rem;">Enter your credentials to access HGE Management Console.</p>
+<body class="hge-app">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div style="text-align: center; margin-bottom: 32px;">
+                <div class="hge-logo" style="font-size: 32px; margin-bottom: 8px;">HELL<em>CORP</em></div>
+                <div style="font-size: 8px; color: var(--red); letter-spacing: 0.3em; text-transform: uppercase;">Operator Authentication</div>
             </div>
 
-            <form class="card" id="loginForm" style="backdrop-filter: blur(10px); background: rgba(17, 20, 26, 0.8);">
-                <div class="form-group">
-                    <label class="form-label" for="usernameInput">Personnel ID / Username</label>
-                    <div style="position: relative;">
-                        <i class="fas fa-user-shield" style="position: absolute; left: 14px; top: 12px; color: var(--text-muted);"></i>
-                        <input type="text" id="usernameInput" class="form-input" style="padding-left: 40px;" placeholder="e.g. j.doe" required autofocus>
-                    </div>
+            <form id="loginForm">
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 8px; color: var(--off); letter-spacing: 0.1em; display: block; margin-bottom: 6px; text-transform: uppercase;">Operator ID</label>
+                    <input type="text" id="usernameInput" class="hge-input" placeholder="e.g. ghostroot" required autofocus>
+                </div>
+                <div style="margin-bottom: 32px;">
+                    <label style="font-size: 8px; color: var(--off); letter-spacing: 0.1em; display: block; margin-bottom: 6px; text-transform: uppercase;">Secret Key</label>
+                    <input type="password" id="passwordInput" class="hge-input" placeholder="••••••••" required>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 24px;">
-                    <label class="form-label" for="passwordInput">Secret Key</label>
-                    <div style="position: relative;">
-                        <i class="fas fa-lock" style="position: absolute; left: 14px; top: 12px; color: var(--text-muted);"></i>
-                        <input type="password" id="passwordInput" class="form-input" style="padding-left: 40px;" placeholder="••••••••" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary full-width" style="height: 44px; font-size: 1rem;">
-                    Sign In to Node
-                </button>
-
-                <div style="text-align: center; margin-top: 24px;">
-                    <p style="font-size: 0.75rem; color: var(--text-muted);">
-                        <i class="fas fa-info-circle"></i> Unauthorized access attempts are logged and reported to Security Operations Center (SOC).
-                    </p>
-                </div>
+                <button type="submit" class="hge-btn hge-btn-primary" style="width: 100%; justify-content: center;">ESTABLISH SESSION →</button>
             </form>
 
-            <div style="text-align: center; margin-top: 24px;">
-                <a href="#" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: underline;">Forgot access credentials?</a>
+            <div style="margin-top: 32px; text-align: center;">
+                <p style="font-size: 8px; color: rgba(160,154,144,0.4); line-height: 1.6; text-transform: uppercase; letter-spacing: 0.1em;">
+                    Access to this node is strictly regulated. <br>
+                    IP metadata is sharded and logged globally.
+                </p>
             </div>
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="/js/utils.js"></script>
-    <script src="/js/api.js"></script>
-    <script src="/js/auth.js"></script>
+    <script src="/js/hge.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('usernameInput').value;
+            const password = document.getElementById('passwordInput').value;
+
+            try {
+                const data = await HGE.api('/api/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, password })
+                });
+
+                HGE.setToken(data.token);
+                HGE.toast('Session Established. Syncing with Global Core...');
+                setTimeout(() => window.location.href = '/dashboard', 1000);
+            } catch (err) {
+                HGE.toast(err.message || 'Authentication Rejected', 'error');
+            }
+        });
+    </script>
 </body>
 </html>
