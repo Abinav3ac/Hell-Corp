@@ -2,7 +2,34 @@
 ## Official Corporate Security Research & Training Environment
 
 > [!WARNING]  
-> **LEGAL DISCLAIMER**: This application is strictly for educational and security research purposes. It contains intentional vulnerabilities that should **NEVER** be deployed on production servers or exposed to the public internet. Use only in isolated lab environments.
+> **LEGAL DISCLAIMER**: This application is strictly for educational and security research purposes. It contains intentional vulnerabilities that should **NEVER** be deployed on production servers.
+
+---
+
+## ⚡ Quick Start (Zero-Config Deployment)
+
+To get the HGE lab running immediately on **Kali Linux** or any Debian-based system:
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/Abinav3ac/Hell-Corp.git
+   cd Hell-Corp
+   ```
+
+2. **Initialize the Environment**:
+   Run the automation script to handle `.env` creation and secret generation:
+   ```bash
+   chmod +x init-setup.sh
+   ./init-setup.sh
+   ```
+
+3. **Deploy the Stack**:
+   ```bash
+   docker-compose up --build -d
+   ```
+
+4. **Access the Lab**:
+   Open your browser to `http://localhost:3000`
 
 ---
 
@@ -55,36 +82,6 @@ The HGE environment features a broad attack surface across multiple vectors:
 
 ---
 
-## 🚀 Setup & Deployment
-
-### 🐳 Method 1: Docker (Recommended)
-Deploy the full HGE cluster with a single command:
-```bash
-docker-compose up --build
-```
-
-### 🛠️ Method 2: Manual Initialization
-Ensure you have **Node.js 18+**, **MongoDB 6+**, and **Redis 7+** installed.
-
-1. **Backend Provisioning**:
-   ```bash
-   cd backend
-   npm install
-   npm run seed  # Critical: Seeds enterprise users and flags
-   npm run dev   # Runs on http://localhost:3001
-   ```
-2. **Frontend Deployment**:
-   ```bash
-   cd frontend
-   # The dashboard is served via Nginx in Docker, 
-   # or can be opened directly at http://localhost:3000
-   ```
-3. **Services**:
-   - **Analytics**: Run `python services/analytics/app.py` (Port 5005)
-   - **Legacy Wiki**: Serves via PHP-FPM/Nginx (Port 8085)
-
----
-
 ## 🎮 Usage Guide
 
 ### 1. Navigating the Console
@@ -105,10 +102,31 @@ python tools/healthcheck.py
 
 ---
 
+## 🛠️ Technical Reference (Manual Setup)
+
+If you prefer not to use Docker, ensure you have **Node.js 18+**, **MongoDB 6+**, and **Redis 7+** installed.
+
+1. **Environment Setup**:
+   Copy `.env.example` to `.env` and configure your local connection strings.
+
+2. **Backend Provisioning**:
+   ```bash
+   cd backend
+   npm install
+   npm run seed  # Critical: Seeds enterprise users and flags
+   npm run dev   # Runs on http://localhost:3001
+   ```
+
+3. **Services**:
+   - **Analytics**: Run `python services/analytics/app.py` (Port 5005)
+   - **Legacy Wiki**: Serves via PHP-FPM/Nginx (Port 8085)
+
+---
+
 ## 📧 Support & Contributions
 For research queries or to contribute new enterprise-grade vulnerabilities:
 - **Project Lead**: [Abinav3ac](https://github.com/Abinav3ac)
-- **Email**: `security@hellcorp-global.int` (Placeholder)
+- **Email**: `security@hellcorp-global.int`
 
 ---
 © 2026 Hellcorp Global Enterprise. Authorized security research only.
