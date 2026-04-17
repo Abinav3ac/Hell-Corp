@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results | Hellcorp Global Enterprise</title>
+    <link rel="stylesheet" href="/css/hellcorp.css">
+    <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+</head>
+<body class="main-wrapper" style="margin-left: 0; min-height: 100vh;">
+
+    <header class="top-bar" style="padding: 0 50px;">
+        <div class="sidebar-header" style="padding: 0;">
+            <div class="logo-icon" onclick="window.location.href='/'" style="cursor: pointer;">H</div>
+            <span class="logo-text" onclick="window.location.href='/'" style="cursor: pointer;">HELLCORP</span>
+        </div>
+        
+        <div class="search-container" style="flex: 1; max-width: 600px; margin: 0 40px;">
+            <div style="position: relative;">
+                <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                <input type="text" id="globalSearch" class="form-input" style="padding-left: 40px; background: rgba(13, 17, 23, 0.5);">
+            </div>
+        </div>
+
+        <button class="btn btn-secondary" onclick="window.location.href='/'">Return to Dashboard</button>
+    </header>
+
+    <div class="content-body" style="max-width: 1000px; margin: 0 auto; padding: 60px 20px;">
+        <div style="margin-bottom: 40px;">
+            <!-- VULNERABILITY: DOM XSS via 'q' parameter -->
+            <h1 id="searchHeader" style="font-size: 1.5rem;">Global Search Index</h1>
+            <p id="searchSubheader" style="color: var(--text-secondary); margin-top: 8px;"></p>
+        </div>
+
+        <div id="resultsContainer" class="dashboard-grid">
+            <!-- Dynamic results -->
+            <div class="col-12 text-center" style="padding: 100px 0; color: var(--text-muted);">
+                <i class="fas fa-search-minus" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                <p>Initializing federated search across HGE nodes...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/utils.js"></script>
+    <script src="/js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const query = Utils.getParam('q');
+            const searchInput = document.getElementById('globalSearch');
+            const searchHeader = document.getElementById('searchHeader');
+            const searchSubheader = document.getElementById('searchSubheader');
+            
+            if (query) {
+                searchInput.value = query;
+                
+                // VULNERABLE: Direct injection of query into innerHTML
+                searchHeader.innerHTML = `Internal Results for: <span style="color: var(--brand-primary);">${query}</span>`;
+                searchSubheader.textContent = `Scanned 14,291 records in 0.04s. Restricted results hidden.`;
+                
+                await performSearch(query);
+            }
+        });
+
+        async function performSearch(query) {
+            const container = document.getElementById('resultsContainer');
+            try {
+                // We'll use the Asset API as a search backend
+                const data = await API.getAssets({ q: query, limit: 5 });
+                const assets = data.assets || [];
+                
+                if (assets.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-12 card" style="text-align: center; padding: 60px;">
+                            <p style="color: var(--text-muted);">No corporate assets found matching "${Utils.escapeHtml(query)}".</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = assets.map(asset => `
+                    <div class="col-12 card animate-in" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 20px;">
+                            <div style="width: 48px; height: 48px; background: var(--bg-panel); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-primary); border: 1px solid var(--border-main);">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <div>
+                                <h4 style="margin: 0; font-size: 1rem;">${Utils.escapeHtml(asset.name)}</h4>
+                                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Node ID: ${asset._id.slice(-8).toUpperCase()} | Dept: ${Utils.escapeHtml(asset.department || 'General')}</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="window.location.href='/'">Access Node</button>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                container.innerHTML = `<div class="col-12 card text-center" style="color: var(--status-error);">Search service temporarily unavailable.</div>`;
+            }
+        }
+
+        // Secondary search handler
+        document.getElementById('globalSearch').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                window.location.href = `?q=${encodeURIComponent(document.getElementById('globalSearch').value)}`;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+version: '3.9'
+
+services:
+
+  # ── MongoDB ──────────────────────────────────────────────
+  mongo:
+    image: mongo:6
+    container_name: hellcorp_mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - hellcorp_net
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # ── Redis ────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: hellcorp_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - hellcorp_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ── Backend ──────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hellcorp_backend
+    restart: always
+    env_file: .env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/hellcorp
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=development
+    ports:
+      - "3001:3001"
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - hellcorp_net
+
+  # ── Frontend ─────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hellcorp_frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - hellcorp_net
+
+  # ── Mongo Express (DB UI) ────────────────────────────────
+  mongo-express:
+    image: mongo-express:latest
+    container_name: hellcorp_mongoui
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/hellcorp
+      ME_CONFIG_BASICAUTH: "false"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - hellcorp_net
+
+  # ── Python Analytics ──────────────────────────────────────
+  analytics:
+    build:
+      context: ./services/analytics
+      dockerfile: Dockerfile
+    container_name: hellcorp_analytics
+    restart: always
+    ports:
+      - "5005:5005"
+    networks:
+      - hellcorp_net
+    environment:
+      - FLAG_ANALYTICS=HC{t3mpl4t3_m4g1c_99}
+      - SECRET_KEY=hellcorp_super_secret_5566
+
+  # ── Legacy PHP Wiki ───────────────────────────────────────
+  wiki:
+    build:
+      context: ./services/wiki
+      dockerfile: Dockerfile
+    container_name: hellcorp_wiki
+    restart: always
+    ports:
+      - "8085:80"
+    networks:
+      - hellcorp_net
+    environment:
+      - FLAG_WIKI=HC{sys_c0ntr0l_0wn3d}
+
+volumes:
+  mongo_data:
+  uploads_data:
+
+networks:
+  hellcorp_net:
+    driver: bridge

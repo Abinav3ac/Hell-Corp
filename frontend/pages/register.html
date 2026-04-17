@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REGISTER — HELLCORP MARKETPLACE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/hellcorp.css" />
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-bg"></div>
+
+  <div class="auth-box card-corner" style="max-width:500px;">
+    <div class="auth-logo">
+      <div class="auth-logo-text glitch" data-text="HELLCORP">HELLCORP</div>
+      <div class="auth-logo-sub">CREATE OPERATOR ACCOUNT</div>
+    </div>
+
+    <div class="auth-warning">
+      <span>&#9888;</span>
+      <div>
+        Registration requires a valid referral code or vendor bond payment.
+        Your IP and activity are logged.
+      </div>
+    </div>
+
+    <div id="regError"
+         class="form-error"
+         style="display:none;margin-bottom:16px;padding:10px;
+                background:var(--red-trace);border:1px solid var(--red-dim);">
+    </div>
+    <div id="regSuccess"
+         style="display:none;margin-bottom:16px;padding:10px;
+                background:rgba(0,255,65,0.05);border:1px solid var(--green);
+                color:var(--green);font-size:12px;">
+    </div>
+
+    <!-- Row 1 -->
+    <div class="grid-2" style="gap:12px;">
+      <div class="form-group">
+        <label class="form-label">USERNAME <span class="required">*</span></label>
+        <input type="text" class="form-control" id="regUsername"
+               placeholder="operator_handle" />
+        <div class="form-hint">3-30 chars, no spaces</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ACCOUNT TYPE <span class="required">*</span></label>
+        <!-- INTENTIONAL VULN A12: role value sent directly to API -->
+        <select class="form-control" id="regRole">
+          <option value="buyer">BUYER</option>
+          <option value="vendor">VENDOR</option>
+          <!-- Hidden option — discoverable via source inspection -->
+          <!-- <option value="admin">ADMIN</option> -->
+        </select>
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label class="form-label">EMAIL <span class="required">*</span></label>
+      <input type="email" class="form-control" id="regEmail"
+             placeholder="user@proton.me" />
+      <div class="form-hint">Use disposable or ProtonMail for privacy</div>
+    </div>
+
+    <!-- Passwords -->
+    <div class="grid-2" style="gap:12px;">
+      <div class="form-group">
+        <label class="form-label">PASSWORD <span class="required">*</span></label>
+        <input type="password" class="form-control" id="regPassword"
+               placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">CONFIRM PASSWORD</label>
+        <input type="password" class="form-control" id="regConfirm"
+               placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" />
+      </div>
+    </div>
+
+    <!-- PGP -->
+    <div class="form-group">
+      <label class="form-label">PGP PUBLIC KEY</label>
+      <textarea class="form-control" id="regPgp" rows="3"
+                placeholder="-----BEGIN PGP PUBLIC KEY BLOCK-----"
+                style="resize:vertical;font-size:11px;"></textarea>
+      <div class="form-hint">Optional but recommended for secure communications</div>
+    </div>
+
+    <!-- Vendor shop name (shown when vendor selected) -->
+    <div class="form-group" id="shopNameGroup" style="display:none;">
+      <label class="form-label">SHOP NAME</label>
+      <input type="text" class="form-control" id="regShopName"
+             placeholder="Your Vendor Shop Name" />
+    </div>
+
+    <!-- Referral -->
+    <div class="form-group">
+      <label class="form-label">REFERRAL CODE</label>
+      <input type="text" class="form-control" id="regReferral"
+             placeholder="HC-REF-XXXXXXXX" />
+      <div class="form-hint">Optional — increases account trust score</div>
+    </div>
+
+    <button class="btn btn-primary full-width" id="regBtn" onclick="handleRegister()">
+      &#9672; CREATE ACCOUNT
+    </button>
+
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+      <div class="terminal" style="font-size:11px;">
+        <div class="terminal-header">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <span style="margin-left:8px;font-size:10px;">HELLCORP REGISTER v2.4</span>
+        </div>
+        <div class="terminal-body" style="padding:10px 14px;">
+          <div style="color:var(--text-dim);">
+            <span style="color:var(--red);">$</span> Vendor bond: 0.05 BTC or valid referral<br/>
+            <span style="color:var(--red);">$</span> Buyer accounts: free registration<br/>
+            <span style="color:var(--red);">$</span> All accounts subject to verification<br/>
+            <span style="color:var(--green);" id="regTermCursor">_</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--text-dim);">
+      Already registered? <a href="/pages/login.html">Sign in &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="/js/hellcorp.js"></script>
+<script src="/js/api.js"></script>
+<script>
+// Show/hide shop name when vendor selected
+document.getElementById('regRole').addEventListener('change', function() {
+  document.getElementById('shopNameGroup').style.display =
+    this.value === 'vendor' ? 'block' : 'none';
+});
+
+// Cursor blink
+setInterval(() => {
+  const c = document.getElementById('regTermCursor');
+  if (c) c.style.opacity = c.style.opacity === '0' ? '1' : '0';
+}, 500);
+
+// ── Register Handler ──────────────────────────────────────
+async function handleRegister() {
+  const username  = document.getElementById('regUsername').value.trim();
+  const email     = document.getElementById('regEmail').value.trim();
+  const password  = document.getElementById('regPassword').value;
+  const confirm   = document.getElementById('regConfirm').value;
+  const role      = document.getElementById('regRole').value;
+  const pgpKey    = document.getElementById('regPgp').value.trim();
+  const shopName  = document.getElementById('regShopName').value.trim();
+  const referral  = document.getElementById('regReferral').value.trim();
+  const btn       = document.getElementById('regBtn');
+  const errDiv    = document.getElementById('regError');
+  const successDiv = document.getElementById('regSuccess');
+
+  errDiv.style.display    = 'none';
+  successDiv.style.display = 'none';
+
+  // Basic client-side validation
+  if (!username || !email || !password) {
+    errDiv.textContent   = 'All required fields must be filled.';
+    errDiv.style.display = 'block';
+    return;
+  }
+  if (username.length < 3) {
+    errDiv.textContent   = 'Username must be at least 3 characters.';
+    errDiv.style.display = 'block';
+    return;
+  }
+  if (password.length < 6) {
+    errDiv.textContent   = 'Password must be at least 6 characters.';
+    errDiv.style.display = 'block';
+    return;
+  }
+  if (password !== confirm) {
+    errDiv.textContent   = 'Passwords do not match.';
+    errDiv.style.display = 'block';
+    return;
+  }
+
+  btn.textContent = 'CREATING ACCOUNT...';
+  btn.disabled    = true;
+
+  try {
+    // INTENTIONAL VULN A12: Mass assignment — role, adminNotes, internalFlags
+    // all accepted by the backend without stripping. Sending role=admin works.
+    const payload = {
+      username,
+      email,
+      password,
+      role,                          // A12: client-controlled role
+      'profile.pgpKey': pgpKey,
+      'vendor.shopName': shopName,
+      referral
+      // Try adding: role:"admin", internalFlags:["vip"], adminNotes:"test"
+    };
+
+    const data = await API.register(payload);
+
+    successDiv.innerHTML =
+      'Account created! Welcome, <strong>' +
+      escapeHtml(data.user.username) +
+      '</strong>. Redirecting to dashboard...';
+    successDiv.style.display = 'block';
+
+    showToast('Registration successful!', 'success');
+    setTimeout(() => {
+      window.location.href = '/pages/dashboard.html';
+    }, 1500);
+
+  } catch (err) {
+    // INTENTIONAL VULN D1: Server error (including field that caused duplicate) shown raw
+    errDiv.textContent   = err.error || err.message || 'Registration failed. Try again.';
+    errDiv.style.display = 'block';
+    btn.textContent      = '&#9672; CREATE ACCOUNT';
+    btn.disabled         = false;
+  }
+}
+
+// Enter key support
+document.getElementById('regConfirm')
+  .addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') handleRegister();
+  });
+
+updateNavAuth();
+</script>
+</body>
+</html>

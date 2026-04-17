@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Management Console | Hellcorp Global Enterprise</title>
+    <meta name="description" content="Official management portal for Hellcorp Global Enterprise. Proprietary and Confidential.">
+    
+    <!-- Design System -->
+    <link rel="stylesheet" href="/css/hellcorp.css">
+    
+    <!-- Icons -->
+    <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+    
+    <style>
+        /* Minimal critical styles for loading */
+        .hge-preloader {
+            position: fixed;
+            inset: 0;
+            background: #0a0c10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        .preloader-circle {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #21262d;
+            border-top-color: #388bfd;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hge-preloader" id="preloader">
+        <div class="preloader-circle"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">H</div>
+                <span class="logo-text">HELLCORP</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <li class="nav-item">
+                    <a href="/dashboard" class="nav-link active">
+                        <i class="fas fa-th-large"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/api/finance/overview" class="nav-link">
+                        <i class="fas fa-chart-line"></i> Financial Ops
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/api/hr/employees" class="nav-link">
+                        <i class="fas fa-users"></i> Personnel (HR)
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/api/infrastructure/nodes" class="nav-link">
+                        <i class="fas fa-network-wired"></i> Infrastructure
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/api/dev/repositories" class="nav-link">
+                        <i class="fas fa-code-branch"></i> R&D Systems
+                    </a>
+                </li>
+                <li class="nav-item" style="margin-top: 20px; border-top: 1px solid var(--border-main); padding-top: 20px;">
+                    <a href="/admin/control-panel" class="nav-link" id="adminLink" style="color: var(--status-error); opacity: 0.7;">
+                        <i class="fas fa-shield-alt"></i> Internal Control
+                    </a>
+                </li>
+            </nav>
+            
+            <div class="sidebar-footer" style="padding: 24px;">
+                <div id="userProfile" style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--border-bright);"></div>
+                    <div>
+                        <div id="username" style="font-size: 0.85rem; font-weight: 600; color: var(--text-bright);">Guest User</div>
+                        <div id="userRole" style="font-size: 0.75rem; color: var(--text-muted);">External Node</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-wrapper">
+            <header class="top-bar">
+                <div class="search-container" style="flex: 1; max-width: 400px;">
+                    <div style="position: relative;">
+                        <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                        <input type="text" id="globalSearch" class="form-input" placeholder="Search systems, assets, or employees..." style="padding-left: 36px; background: rgba(13, 17, 23, 0.5);">
+                    </div>
+                </div>
+                
+                <div class="top-bar-actions" style="display: flex; align-items: center; gap: 20px;">
+                    <div class="notifications" style="position: relative;">
+                        <i class="far fa-bell" style="font-size: 1.1rem; color: var(--text-muted); cursor: pointer;"></i>
+                        <span style="position: absolute; top: -5px; right: -5px; width: 8px; height: 8px; background: var(--status-error); border-radius: 50%; border: 2px solid var(--bg-main);"></span>
+                    </div>
+                    <button class="btn btn-secondary" id="logoutBtn" style="height: 36px; padding: 0 12px;">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                    <button class="btn btn-primary" style="height: 36px;">Deploy Update</button>
+                </div>
+            </header>
+
+            <div class="content-body animate-in">
+                <div style="margin-bottom: 32px;">
+                    <h1 style="font-size: 1.75rem; margin-bottom: 8px;">Enterprise Overview</h1>
+                    <p style="color: var(--text-secondary);">Real-time metrics and system health for HGE Global Network.</p>
+                </div>
+
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Stats Section -->
+                    <div class="col-3 card">
+                        <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 12px;">Active Revenue</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--status-success);">$14.2M <span style="font-size: 0.85rem; font-weight: 400; color: var(--text-muted); font-family: var(--font-main);">/ mo</span></div>
+                        <div style="margin-top: 12px; font-size: 0.75rem; color: var(--status-success);">+8.4% since last cluster update</div>
+                    </div>
+                    <div class="col-3 card">
+                        <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 12px;">System Load</div>
+                        <div style="font-size: 1.5rem; font-weight: 700;">42.8%</div>
+                        <div style="margin-top: 12px; font-size: 0.75rem; color: var(--status-warning);">Notice: AWS-RU-NODE-7 throttled</div>
+                    </div>
+                    <div class="col-3 card">
+                        <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 12px;">Encryption Entropy</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--brand-primary);">99.98%</div>
+                        <div style="margin-top: 12px; font-size: 0.75rem; color: var(--text-muted);">AES-256-GCM enforced across all nodes</div>
+                    </div>
+                    <div class="col-3 card">
+                        <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 12px;">Security Events</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--status-error);">2 Active</div>
+                        <div style="margin-top: 12px; font-size: 0.75rem; color: var(--status-error); font-weight: 600;">MITM Attempt - Beijing Node</div>
+                    </div>
+
+                    <!-- Main Data Table -->
+                    <div class="col-8 card" style="padding: 0;">
+                        <div style="padding: 24px; border-bottom: 1px solid var(--border-main);">
+                            <h3 style="font-size: 1rem;">Asset Monitoring</h3>
+                        </div>
+                        <div class="data-table-container" style="border: none; border-radius: 0;">
+                            <table class="data-table" id="assetTable">
+                                <thead>
+                                    <tr>
+                                        <th>Asset Name</th>
+                                        <th>Owner</th>
+                                        <th>Status</th>
+                                        <th>Uptime</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><i class="fas fa-server" style="margin-right: 8px; color: var(--brand-primary);"></i> Core API Gateway</td>
+                                        <td>Infrastructure Dept</td>
+                                        <td><span class="badge badge-success">Online</span></td>
+                                        <td>99.99%</td>
+                                        <td><button class="btn btn-secondary btn-sm" style="padding: 4px 8px;"><i class="fas fa-ellipsis-v"></i></button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fas fa-database" style="margin-right: 8px; color: var(--brand-primary);"></i> User-Auth-Shard-1</td>
+                                        <td>Infosec Team</td>
+                                        <td><span class="badge badge-success">Online</span></td>
+                                        <td>99.94%</td>
+                                        <td><button class="btn btn-secondary btn-sm" style="padding: 4px 8px;"><i class="fas fa-ellipsis-v"></i></button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fas fa-microchip" style="margin-right: 8px; color: var(--brand-primary);"></i> AI-Inference-Engine</td>
+                                        <td>R&D Division</td>
+                                        <td><span class="badge badge-warning">Degraded</span></td>
+                                        <td>94.20%</td>
+                                        <td><button class="btn btn-secondary btn-sm" style="padding: 4px 8px;"><i class="fas fa-ellipsis-v"></i></button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fas fa-satellite" style="margin-right: 8px; color: var(--brand-primary);"></i> Global-Relay-3</td>
+                                        <td>Logistics</td>
+                                        <td><span class="badge badge-error">Offline</span></td>
+                                        <td>0.00%</td>
+                                        <td><button class="btn btn-secondary btn-sm" style="padding: 4px 8px;"><i class="fas fa-redo"></i></button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="padding: 16px; text-align: center; border-top: 1px solid var(--border-main);">
+                            <a href="#" style="font-size: 0.8rem; font-weight: 500;">View all 1,429 enterprise assets</a>
+                        </div>
+                    </div>
+
+                    <!-- Side Widgets -->
+                    <div class="col-4" style="display: flex; flex-direction: column; gap: 24px;">
+                        <div class="card terminal-card" style="flex: 1;">
+                            <div class="terminal-header">
+                                <div class="terminal-dot dot-red"></div>
+                                <div class="terminal-dot dot-yellow"></div>
+                                <div class="terminal-dot dot-green"></div>
+                                <span style="margin-left: 8px;">hge-remote-shell (v2.4.1)</span>
+                            </div>
+                            <div class="terminal-body" id="terminalOutput">
+                                <span style="color: #6e7681;">[14:22:01]</span> Established link to cluster-C<br>
+                                <span style="color: #6e7681;">[14:22:05]</span> Initializing node healthcheck...<br>
+                                <span style="color: #6e7681;">[14:23:10]</span> <span style="color: #f85149;">ERROR:</span> Unauthorized fragment detected on sub-route /api/hr<br>
+                                <span style="color: var(--brand-primary);">$</span> next_sync_window --force
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 24px;">
+                            <h3 style="font-size: 0.9rem; margin-bottom: 16px;">System Health</h3>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted);">
+                                    <span>Mainframe Temperature</span>
+                                    <span>42°C</span>
+                                </div>
+                                <div style="height: 4px; background: var(--border-main); border-radius: 2px;">
+                                    <div style="width: 42%; height: 100%; background: var(--brand-primary); border-radius: 2px;"></div>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">
+                                    <span>Uplink Latency</span>
+                                    <span>14ms</span>
+                                </div>
+                                <div style="height: 4px; background: var(--border-main); border-radius: 2px;">
+                                    <div style="width: 14%; height: 100%; background: var(--status-success); border-radius: 2px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/config.js"></script>
+    <script src="/js/utils.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/dashboard.js"></script>
+    
+    <script>
+        // Preloader Logic
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => preloader.style.display = 'none', 500);
+            }, 800);
+        });
+
+        // Search redirection (Subtle DOM XSS vulnerability path)
+        const searchInput = document.getElementById('globalSearch');
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = searchInput.value;
+                // Redirecting to search results page with unsanitized query
+                window.location.href = `/pages/search-results.html?q=${encodeURIComponent(query)}`;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHALLENGES — HELLCORP LAB</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/hellcorp.css" />
+</head>
+<body>
+
+<div class="warning-banner">⚠ HELLCORP SECURITY LAB — INTENTIONALLY VULNERABLE TRAINING ENVIRONMENT ⚠</div>
+
+<nav class="navbar">
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">HC</div>
+    <span class="nav-logo-text">HELLCORP</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/index.html">MARKET</a></li>
+    <li><a href="/pages/forum.html">FORUM</a></li>
+    <li><a href="/pages/challenges.html" class="active">CHALLENGES</a></li>
+  </ul>
+  <div class="nav-actions" id="navActions"></div>
+</nav>
+
+<div class="container" style="padding-top:32px;">
+
+  <!-- Header -->
+  <div style="margin-bottom:32px;">
+    <div style="font-size:11px;color:var(--red);letter-spacing:0.3em;margin-bottom:8px;">
+      // HELLCORP SECURITY LAB
+    </div>
+    <h1 style="font-size:32px;margin-bottom:12px;">
+      VULNERABILITY <span style="color:var(--red);">CHALLENGES</span>
+    </h1>
+    <p style="color:var(--text-secondary);max-width:600px;">
+      100+ intentional vulnerabilities hidden throughout the HELLCORP platform. 
+      Discover them through real application workflows — no hints provided. 
+      This is a real bug bounty simulation, not a CTF.
+    </p>
+    
+    <div class="grid-4" style="margin-top:24px;gap:1px;background:var(--border);">
+      <div class="stat-panel">
+        <div style="font-size:28px;font-family:var(--font-display);color:var(--red);" id="totalChallenges">100+</div>
+        <div style="font-size:11px;color:var(--text-dim);">TOTAL CHALLENGES</div>
+      </div>
+      <div class="stat-panel">
+        <div style="font-size:28px;font-family:var(--font-display);color:var(--green);" id="solvedCount">0</div>
+        <div style="font-size:11px;color:var(--text-dim);">SOLVED</div>
+      </div>
+      <div class="stat-panel">
+        <div style="font-size:28px;font-family:var(--font-display);color:var(--cyan);" id="progressPct">0%</div>
+        <div style="font-size:11px;color:var(--text-dim);">PROGRESS</div>
+      </div>
+      <div class="stat-panel">
+        <div style="font-size:28px;font-family:var(--font-display);color:var(--orange);">0</div>
+        <div style="font-size:11px;color:var(--text-dim);">POINTS</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="flex gap-3" style="margin-bottom:20px;flex-wrap:wrap;align-items:center;">
+    <select class="form-control" style="width:160px;" id="catFilter" onchange="filterChallenges()">
+      <option value="">ALL CATEGORIES</option>
+      <option value="injection">INJECTION</option>
+      <option value="xss">XSS</option>
+      <option value="access-control">ACCESS CONTROL</option>
+      <option value="authentication">AUTHENTICATION</option>
+      <option value="business-logic">BUSINESS LOGIC</option>
+      <option value="api">API SECURITY</option>
+      <option value="file-handling">FILE HANDLING</option>
+      <option value="ssrf">SSRF</option>
+      <option value="deserialize">DESERIALIZATION</option>
+      <option value="graphql">GRAPHQL</option>
+      <option value="websocket">WEBSOCKET</option>
+    </select>
+    <select class="form-control" style="width:140px;" id="diffFilter" onchange="filterChallenges()">
+      <option value="">ALL DIFFICULTIES</option>
+      <option value="basic">BASIC</option>
+      <option value="intermediate">INTERMEDIATE</option>
+      <option value="advanced">ADVANCED</option>
+    </select>
+    <select class="form-control" style="width:140px;" id="statusFilter" onchange="filterChallenges()">
+      <option value="">ALL STATUS</option>
+      <option value="unsolved">UNSOLVED</option>
+      <option value="solved">SOLVED</option>
+    </select>
+    <div style="margin-left:auto;font-size:11px;color:var(--text-dim);">
+      Showing <span id="visibleCount">0</span> challenges
+    </div>
+  </div>
+
+  <!-- Challenge Grid -->
+  <div id="challengeGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1px;background:var(--border);margin-bottom:40px;"></div>
+
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="/js/hellcorp.js"></script>
+<script>
+const CHALLENGES = [
+  // INJECTION
+  { id:'C001', title:'SQL Injection — Vendor Login Bypass', cat:'injection', diff:'basic', points:100, desc:'Bypass authentication on the vendor login endpoint using SQL injection techniques.' },
+  { id:'C002', title:'Union-Based SQLi — Product Search', cat:'injection', diff:'basic', points:150, desc:'Extract database contents via UNION-based SQL injection in the marketplace search function.' },
+  { id:'C003', title:'Blind Boolean SQLi — User Lookup', cat:'injection', diff:'intermediate', points:200, desc:'Enumerate the user database using boolean-based blind SQL injection.' },
+  { id:'C004', title:'NoSQL Operator Injection — Auth Bypass', cat:'injection', diff:'intermediate', points:200, desc:'Bypass MongoDB authentication using NoSQL operator injection ($gt, $ne, $regex).' },
+  { id:'C005', title:'OS Command Injection — Admin Exec', cat:'injection', diff:'advanced', points:400, desc:'Achieve remote code execution via the hidden admin command execution endpoint.' },
+  { id:'C006', title:'SSTI — Template Rendering Engine', cat:'injection', diff:'advanced', points:450, desc:'Exploit server-side template injection to achieve code execution.' },
+  { id:'C007', title:'Log Injection — Forging Audit Trail', cat:'injection', diff:'intermediate', points:250, desc:'Inject malicious entries into the audit log via user-controlled input.' },
+  { id:'C008', title:'CSV Injection — Export Function', cat:'injection', diff:'basic', points:100, desc:'Exploit formula injection via the data export CSV functionality.' },
+  
+  // XSS
+  { id:'C010', title:'Stored XSS — Product Review', cat:'xss', diff:'basic', points:150, desc:'Inject persistent XSS payload via the product review submission form.' },
+  { id:'C011', title:'Stored XSS — Forum Post Body', cat:'xss', diff:'basic', points:150, desc:'Execute arbitrary JavaScript via the forum post content field.' },
+  { id:'C012', title:'Reflected XSS — Search Query', cat:'xss', diff:'basic', points:100, desc:'Trigger reflected XSS via the marketplace search parameter.' },
+  { id:'C013', title:'DOM XSS — URL Hash Fragment', cat:'xss', diff:'intermediate', points:250, desc:'Exploit DOM-based XSS via the URL hash fragment rendered into innerHTML.' },
+  { id:'C014', title:'Blind XSS — Admin Review Panel', cat:'xss', diff:'intermediate', points:350, desc:'Plant a blind XSS payload that fires when an admin reviews your submission.' },
+  { id:'C015', title:'XSS via WebSocket Message', cat:'xss', diff:'intermediate', points:300, desc:'Inject XSS through WebSocket message that gets rendered in activity feed.' },
+  { id:'C016', title:'DOM Clobbering — Navigation Logic', cat:'xss', diff:'advanced', points:450, desc:'Override DOM properties via HTML injection to hijack navigation logic.' },
+  
+  // ACCESS CONTROL
+  { id:'C020', title:'IDOR — Read Any User\'s Messages', cat:'access-control', diff:'basic', points:150, desc:'Access private messages of other users by manipulating user ID parameters.' },
+  { id:'C021', title:'IDOR — Download Paid Tool for Free', cat:'access-control', diff:'basic', points:200, desc:'Download a paid marketplace tool without purchasing it using IDOR.' },
+  { id:'C022', title:'Horizontal Privilege Escalation — Edit Profile', cat:'access-control', diff:'intermediate', points:250, desc:'Modify another user\'s profile by exploiting missing ownership checks.' },
+  { id:'C023', title:'Vertical Privilege Escalation — Register as Admin', cat:'access-control', diff:'intermediate', points:300, desc:'Register a new account with admin role via mass assignment vulnerability.' },
+  { id:'C024', title:'Forced Browsing — Hidden Admin Dashboard', cat:'access-control', diff:'basic', points:100, desc:'Discover and access the hidden admin dashboard endpoint.' },
+  { id:'C025', title:'Parameter Tampering — Role Override', cat:'access-control', diff:'intermediate', points:250, desc:'Bypass role checks by supplying a role_override query parameter.' },
+  { id:'C026', title:'GraphQL Authorization Bypass — Admin Users', cat:'access-control', diff:'advanced', points:400, desc:'Query administrative user data via GraphQL without authorization.' },
+  { id:'C027', title:'Object-Level Auth Bypass — Product Update', cat:'access-control', diff:'intermediate', points:300, desc:'Update any vendor\'s product listing without owning the product.' },
+  
+  // AUTHENTICATION
+  { id:'C030', title:'JWT None Algorithm Attack', cat:'authentication', diff:'intermediate', points:300, desc:'Forge a valid JWT token by changing the algorithm to "none".' },
+  { id:'C031', title:'JWT RS256 → HS256 Confusion', cat:'authentication', diff:'advanced', points:450, desc:'Exploit algorithm confusion to forge admin JWT using the public key.' },
+  { id:'C032', title:'Weak JWT Secret — Brute Force', cat:'authentication', diff:'basic', points:150, desc:'Crack the weak JWT signing secret via brute force.' },
+  { id:'C033', title:'Account Enumeration — Login Endpoint', cat:'authentication', diff:'basic', points:100, desc:'Enumerate valid usernames via different error messages on login.' },
+  { id:'C034', title:'Predictable Password Reset Token', cat:'authentication', diff:'intermediate', points:250, desc:'Exploit the weak password reset token generation to take over an account.' },
+  { id:'C035', title:'Session Token in URL — Leakage via Logs', cat:'authentication', diff:'intermediate', points:200, desc:'Exploit token-in-URL to steal session via referrer headers or server logs.' },
+  { id:'C036', title:'Token Not Invalidated on Logout', cat:'authentication', diff:'basic', points:100, desc:'Demonstrate that JWT tokens remain valid after logout.' },
+  
+  // BUSINESS LOGIC
+  { id:'C040', title:'Price Manipulation — Purchase at $0', cat:'business-logic', diff:'basic', points:200, desc:'Purchase a marketplace tool by supplying a custom price in the request body.' },
+  { id:'C041', title:'Negative Deposit — Balance Overflow', cat:'business-logic', diff:'basic', points:150, desc:'Add unlimited funds to your wallet by depositing a negative amount.' },
+  { id:'C042', title:'Race Condition — Double Spend', cat:'business-logic', diff:'advanced', points:500, desc:'Exploit a race condition to spend the same wallet balance twice simultaneously.' },
+  { id:'C043', title:'Review Without Purchase', cat:'business-logic', diff:'basic', points:100, desc:'Submit a verified purchase review for a product you never bought.' },
+  { id:'C044', title:'TOCTOU — Concurrent Transfer', cat:'business-logic', diff:'advanced', points:450, desc:'Exploit time-of-check/time-of-use flaw in the wallet transfer endpoint.' },
+  { id:'C045', title:'Refund Abuse — Re-download After Refund', cat:'business-logic', diff:'intermediate', points:250, desc:'Obtain a refund while retaining valid download access to the tool.' },
+  
+  // API
+  { id:'C050', title:'Mass Assignment — Escalate Own Role', cat:'api', diff:'intermediate', points:300, desc:'Escalate your account privileges by exploiting mass assignment in user update.' },
+  { id:'C051', title:'Excessive Data Exposure — User List API', cat:'api', diff:'basic', points:100, desc:'Retrieve sensitive user data including password hashes from the public users API.' },
+  { id:'C052', title:'Broken Function Level Auth — Admin API', cat:'api', diff:'intermediate', points:250, desc:'Access admin-only API functions using only a standard user token.' },
+  { id:'C053', title:'API Key in Source Code', cat:'api', diff:'basic', points:50, desc:'Find the hardcoded API key in the frontend JavaScript source code.' },
+  { id:'C054', title:'GraphQL Introspection — Schema Dump', cat:'graphql', diff:'basic', points:100, desc:'Dump the full GraphQL schema via introspection query.' },
+  { id:'C055', title:'GraphQL Batch Query Abuse', cat:'graphql', diff:'intermediate', points:250, desc:'Bypass rate limiting by batching multiple GraphQL queries in one request.' },
+  
+  // FILE HANDLING  
+  { id:'C060', title:'Unrestricted File Upload — PHP Webshell', cat:'file-handling', diff:'intermediate', points:350, desc:'Upload and execute a PHP webshell via the tool upload functionality.' },
+  { id:'C061', title:'Path Traversal — Download Any File', cat:'file-handling', diff:'intermediate', points:300, desc:'Read arbitrary server files via path traversal in the download endpoint.' },
+  { id:'C062', title:'Local File Inclusion — /etc/passwd', cat:'file-handling', diff:'basic', points:150, desc:'Read /etc/passwd via the LFI-vulnerable file include endpoint.' },
+  { id:'C063', title:'File Upload Race Condition', cat:'file-handling', diff:'advanced', points:450, desc:'Exploit a race condition between file upload and validation to execute code.' },
+  { id:'C064', title:'Backup File Exposure — database.sql', cat:'file-handling', diff:'basic', points:100, desc:'Find and download an exposed database backup file.' },
+  
+  // SSRF
+  { id:'C070', title:'Basic SSRF — Internal Service Probe', cat:'ssrf', diff:'basic', points:150, desc:'Use the SSRF-vulnerable endpoint to probe internal services.' },
+  { id:'C071', title:'Cloud Metadata SSRF — AWS Keys', cat:'ssrf', diff:'intermediate', points:350, desc:'Extract AWS IAM credentials via SSRF to the instance metadata service.' },
+  { id:'C072', title:'Blind SSRF — Out-of-Band Detection', cat:'ssrf', diff:'intermediate', points:300, desc:'Detect blind SSRF using out-of-band DNS/HTTP callbacks.' },
+  { id:'C073', title:'SSRF → Redis RCE via Gopher', cat:'ssrf', diff:'advanced', points:500, desc:'Chain SSRF with Gopher protocol to achieve RCE via Redis.' },
+  
+  // DATA EXPOSURE
+  { id:'C080', title:'Debug Endpoint — Server Config Dump', cat:'api', diff:'basic', points:100, desc:'Access the /api/debug endpoint to dump full server configuration.' },
+  { id:'C081', title:'Git Repository Exposed — Source Code', cat:'api', diff:'basic', points:100, desc:'Download the .git directory to reconstruct source code.' },
+  { id:'C082', title:'JWT Decode — Internal User Flags', cat:'api', diff:'basic', points:50, desc:'Decode the JWT token to find sensitive internal fields returned to users.' },
+  { id:'C083', title:'Error Stack Trace — Tech Stack Enum', cat:'api', diff:'basic', points:50, desc:'Trigger verbose error responses revealing full stack traces and file paths.' },
+  { id:'C084', title:'Admin Key in Environment — Config Route', cat:'api', diff:'intermediate', points:200, desc:'Extract the admin API key via the exposed /api/admin/config endpoint.' },
+  
+  // WEBSOCKET
+  { id:'C090', title:'WebSocket Auth Bypass — No Token Required', cat:'websocket', diff:'basic', points:100, desc:'Connect to the WebSocket endpoint without any authentication.' },
+  { id:'C091', title:'WebSocket Admin Command Injection', cat:'websocket', diff:'intermediate', points:350, desc:'Execute admin commands over the WebSocket using the hardcoded admin key.' },
+  { id:'C092', title:'WebSocket XSS via Activity Feed', cat:'websocket', diff:'intermediate', points:300, desc:'Inject XSS through WebSocket messages rendered in the live activity feed.' },
+  
+  // MISC / INFRASTRUCTURE
+  { id:'C100', title:'Open Redirect — Login Redirect Param', cat:'access-control', diff:'basic', points:100, desc:'Exploit the unvalidated redirect parameter on the login page.' },
+  { id:'C101', title:'Clickjacking — No X-Frame-Options', cat:'access-control', diff:'basic', points:75, desc:'Demonstrate clickjacking attack due to missing X-Frame-Options header.' },
+  { id:'C102', title:'CORS Misconfiguration — Cross-Origin Read', cat:'api', diff:'intermediate', points:200, desc:'Exploit wildcard CORS to read authenticated API responses cross-origin.' },
+  { id:'C103', title:'Cookie Missing HttpOnly — XSS Token Theft', cat:'authentication', diff:'intermediate', points:250, desc:'Steal session cookies via XSS due to missing HttpOnly flag.' },
+  { id:'C104', title:'Username Enumeration — Registration', cat:'authentication', diff:'basic', points:75, desc:'Enumerate existing usernames via the registration error messages.' },
+];
+
+let solved = JSON.parse(localStorage.getItem('hc_solved') || '[]');
+
+function renderChallenge(c) {
+  const isSolved = solved.includes(c.id);
+  const diffColors = { basic:'var(--green)', intermediate:'var(--yellow)', advanced:'var(--red)' };
+  const catColors = {
+    injection:'var(--red)', xss:'var(--orange)', 'access-control':'var(--cyan)',
+    authentication:'var(--purple)', 'business-logic':'var(--yellow)', api:'var(--green)',
+    'file-handling':'var(--orange)', ssrf:'var(--red)', graphql:'var(--cyan)',
+    websocket:'var(--purple)'
+  };
+  
+  return `
+    <div class="card" style="cursor:crosshair;${isSolved ? 'opacity:0.6;' : ''}" 
+         onclick="toggleSolve('${c.id}', this)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge" style="color:${catColors[c.cat]||'var(--text-dim)'};border-color:${catColors[c.cat]||'var(--text-dim)'};">
+            ${c.cat.toUpperCase()}
+          </span>
+          <span class="badge" style="color:${diffColors[c.diff]};border-color:${diffColors[c.diff]};">
+            ${c.diff.toUpperCase()}
+          </span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-family:var(--font-display);font-size:11px;color:var(--orange);">
+            ${c.points} pts
+          </span>
+          <div style="width:20px;height:20px;border:1px solid ${isSolved ? 'var(--green)' : 'var(--border)'};
+                      background:${isSolved ? 'var(--green)' : 'transparent'};
+                      display:flex;align-items:center;justify-content:center;
+                      font-size:12px;color:var(--black);transition:all 0.2s;">
+            ${isSolved ? '✓' : ''}
+          </div>
+        </div>
+      </div>
+      
+      <div style="font-family:var(--font-display);font-size:11px;font-weight:700;
+                  margin-bottom:8px;letter-spacing:0.06em;
+                  color:${isSolved ? 'var(--green)' : 'var(--text-primary)'};">
+        [${c.id}] ${c.title}
+      </div>
+      
+      <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">
+        ${c.desc}
+      </div>
+      
+      <div style="margin-top:10px;font-size:10px;color:var(--text-dim);">
+        ${isSolved 
+          ? '<span style="color:var(--green);">● SOLVED</span>' 
+          : '<span style="color:var(--text-dim);">○ UNSOLVED — No hints provided</span>'
+        }
+      </div>
+    </div>
+  `;
+}
+
+function toggleSolve(id, el) {
+  if (solved.includes(id)) {
+    solved = solved.filter(s => s !== id);
+    showToast(`Challenge ${id} marked unsolved`, 'info');
+  } else {
+    solved.push(id);
+    showToast(`Challenge ${id} marked solved! 🎯`, 'success');
+  }
+  localStorage.setItem('hc_solved', JSON.stringify(solved));
+  updateStats();
+  filterChallenges();
+}
+
+function filterChallenges() {
+  const cat = document.getElementById('catFilter').value;
+  const diff = document.getElementById('diffFilter').value;
+  const status = document.getElementById('statusFilter').value;
+  
+  let filtered = CHALLENGES.filter(c => {
+    if (cat && c.cat !== cat) return false;
+    if (diff && c.diff !== diff) return false;
+    if (status === 'solved' && !solved.includes(c.id)) return false;
+    if (status === 'unsolved' && solved.includes(c.id)) return false;
+    return true;
+  });
+  
+  document.getElementById('challengeGrid').innerHTML = 
+    filtered.length ? filtered.map(renderChallenge).join('') 
+    : `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-dim);">No challenges match your filters.</div>`;
+  
+  document.getElementById('visibleCount').textContent = filtered.length;
+}
+
+function updateStats() {
+  document.getElementById('solvedCount').textContent = solved.length;
+  const pct = Math.round((solved.length / CHALLENGES.length) * 100);
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+// Init
+updateStats();
+filterChallenges();
+updateNavAuth();
+</script>
+</body>
+</html>
