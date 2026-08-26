@@ -126,7 +126,7 @@ If you prefer not to use Docker, ensure you have **Node.js 18+**, **MongoDB 6+**
 ## 📧 Support & Contributions
 For research queries or to contribute new enterprise-grade vulnerabilities:
 - **Project Lead**: [Abinav3ac](https://github.com/Abinav3ac)
-- **Email**: `security@hellcorp-global.int`
+
 
 ---
 © 2026 Hellcorp Global Enterprise. Authorized security research only.
